@@ -12,10 +12,11 @@ public class God : MonoBehaviour {
 
     public GameObject hand;
     public GameObject board;
+    public Sprite carBackground;
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         if (theOne == null)
             theOne = this;
         Card.AddToHand();
