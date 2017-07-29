@@ -8,8 +8,6 @@ using UnityEngine;
 
 static class GameMaster
 {
-    static Thread flow;
-    static Exception mainThreadException;
     public static void Start()
     {
         /*  1) Deal 4 cards
@@ -58,10 +56,5 @@ static class GameMaster
     static bool CheckVictory()
     {
         return false;
-    }
-
-    public static void End()
-    {
-        //flow.Abort();
     }
 }
