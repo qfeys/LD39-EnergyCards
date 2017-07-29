@@ -86,6 +86,8 @@ abstract class Card
         imGo.AddComponent<Image>().sprite = God.theOne.coal_plant;
     }
 
+    public abstract Board.Regions ValidRegions();
+
     class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         public Card parent;
@@ -134,5 +136,8 @@ abstract class Card
 }
 class TestCard : Card
 {
-
+    public override Board.Regions ValidRegions()
+    {
+        return Board.Regions.Road;
+    }
 }
