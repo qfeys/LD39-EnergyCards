@@ -25,7 +25,7 @@ abstract class Card
         card.AddComponent<LayoutElement>();
 
         Image bg = card.AddComponent<Image>();
-        bg.sprite = God.theOne.carBackground;
+        bg.sprite = God.theOne.cardBackground;
         bg.type = Image.Type.Sliced;
         bg.color = Color.blue;
 
@@ -68,7 +68,7 @@ abstract class Card
         rt.anchoredPosition = pos;
 
         Image bg = card.AddComponent<Image>();
-        bg.sprite = God.theOne.carBackground;
+        bg.sprite = God.theOne.cardBackground;
         bg.type = Image.Type.Sliced;
         bg.color = Color.red;
 
@@ -129,7 +129,7 @@ abstract class Card
         }
     }
 
-    class MiniCardScript : MonoBehaviour
+    protected class MiniCardScript : MonoBehaviour
     {
         public Card parent;
     }

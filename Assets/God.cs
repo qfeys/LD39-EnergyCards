@@ -13,7 +13,7 @@ public class God : MonoBehaviour {
     public GameObject hand;
     public GameObject board;
 
-    public Sprite carBackground;
+    public Sprite cardBackground;
     public Sprite coal_plant;
     public Font standardFont;
 
