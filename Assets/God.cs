@@ -27,7 +27,7 @@ public class God : MonoBehaviour {
         if (theOne == null)
             theOne = this;
         activeCards = new List<Card>();
-
+        Deck.Create();
         Card c = new Card("test",Board.Regions.city);
         c.PlaceInHand();
 

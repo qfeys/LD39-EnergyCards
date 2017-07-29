@@ -12,6 +12,7 @@ class Card
     public string name;
     public Board.Regions validRegions;
     public GameObject card;
+    private Card key;
 
     protected Card() { }
 
@@ -19,6 +20,12 @@ class Card
     {
         this.name = name;
         this.validRegions = validRegions;
+    }
+
+    public Card(Card copy)
+    {
+        name = copy.name;
+        validRegions = copy.validRegions;
     }
 
     public void PlaceInHand()
@@ -35,7 +42,7 @@ class Card
         card.AddComponent<LayoutElement>();
 
         Image bg = card.AddComponent<Image>();
-        bg.sprite = God.theOne.cardBackground;
+        bg.sprite = ImageLibrary.GetImage("card_background_long");
         bg.type = Image.Type.Sliced;
         bg.color = Color.blue;
 
@@ -49,7 +56,7 @@ class Card
         imRt.pivot = new Vector2(0.5f, 1);
         imRt.sizeDelta = new Vector2(120, 100);
         imRt.anchoredPosition = new Vector2(0, -10);
-        imGo.AddComponent<Image>().sprite = God.theOne.coal_plant;
+        bg.sprite = ImageLibrary.GetImage(name + "_big");
 
         GameObject txGo = new GameObject("card_text", typeof(RectTransform));
         txGo.transform.SetParent(card.transform, false);
@@ -92,7 +99,7 @@ class Card
         imRt.pivot = new Vector2(0.5f, 0.5f);
         imRt.sizeDelta = new Vector2(100, 100);
         imRt.anchoredPosition = new Vector2(0, 0);
-        imGo.AddComponent<Image>().sprite = God.theOne.coal_plant;
+        bg.sprite = ImageLibrary.GetImage(name + "_small");
     }
 
     class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
