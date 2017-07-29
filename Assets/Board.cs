@@ -253,6 +253,36 @@ static class Board
         GhostCard.RemoveGhosts();
     }
 
+    static List<Card> allCards { get
+        {
+            List<Card> cards = new List<Card>();
+            for (int i = 0; i < 5; i++)
+                for (int j = 0; j < 5; j++)
+                    if (city[i, j] != null) cards.Add(city[i, j]);
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    if (port[i, j] != null) cards.Add(port[i, j]);
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                    if (offshore[i, j] != null) cards.Add(offshore[i, j]);
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    if (offshoreRoad[i, j] != null) cards.Add(offshoreRoad[i, j]);
+            for (int i = 0; i < 4; i++)
+                for (int j = 0; j < 4; j++)
+                    if (desert[i, j] != null) cards.Add(desert[i, j]);
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    if (desertRoad[i, j] != null) cards.Add(desertRoad[i, j]);
+            return cards;
+        } }
+
+    public static float EnergyAvailable { get {
+            return 0;
+        } }
+    public static float RepDiff { get; internal set; }
+    public static float GWdiff { get; internal set; }
+
     static Vector2 CityLoc(int x, int y) { return new Vector2((CITY_OFFSET_X + x) * GRID_SIZE, (CITY_OFFSET_Y + y) * GRID_SIZE); }
     static Vector2 PortLoc(int x, int y) { return new Vector2((PORT_OFFSET_X + x) * GRID_SIZE, (PORT_OFFSET_Y + y) * GRID_SIZE); }
     static Vector2 OshLoc(int x, int y) { return new Vector2((OFFSHORE_OFFSET_X + x) * GRID_SIZE, (OFFSHORE_OFFSET_Y + y) * GRID_SIZE); }
