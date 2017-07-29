@@ -12,7 +12,9 @@ public class God : MonoBehaviour {
 
     public GameObject hand;
     public GameObject board;
+
     public Sprite carBackground;
+    public Sprite coal_plant;
 
 
     // Use this for initialization
