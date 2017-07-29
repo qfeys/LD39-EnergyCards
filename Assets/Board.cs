@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 static class Board
 {
@@ -14,6 +15,107 @@ static class Board
     static Card[,] desertRoad = new Card[3, 3];
 
     [Flags] public enum Regions { city = 1, port = 2, offshore = 4, offshoreRoad = 8, desert = 16, desertRoad = 32, Road = offshoreRoad | desertRoad }
+
+    static public void Create()
+    {
+        Sprite border = God.theOne.board_border;
+        {
+            GameObject go = new GameObject("border_port", typeof(RectTransform));
+
+            go.transform.SetParent(God.theOne.board_go.transform, false);
+            RectTransform rt = go.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+            rt.sizeDelta = new Vector2(3 * GRID_SIZE + 40, 3 * GRID_SIZE + 40);
+
+            rt.anchoredPosition = new Vector2(PORT_OFFSET_X * GRID_SIZE - 20, PORT_OFFSET_Y * GRID_SIZE - 20);
+
+            Image bg = go.AddComponent<Image>();
+            bg.sprite = border;
+            bg.type = Image.Type.Sliced;
+        }
+        {
+            GameObject go = new GameObject("border_offsh", typeof(RectTransform));
+
+            go.transform.SetParent(God.theOne.board_go.transform, false);
+            RectTransform rt = go.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+            rt.sizeDelta = new Vector2(4 * GRID_SIZE + 40, 4 * GRID_SIZE + 40);
+
+            rt.anchoredPosition = new Vector2(OFFSHORE_OFFSET_X * GRID_SIZE - 20, OFFSHORE_OFFSET_Y * GRID_SIZE - 20);
+
+            Image bg = go.AddComponent<Image>();
+            bg.sprite = border;
+            bg.type = Image.Type.Sliced;
+        }
+        {
+            GameObject go = new GameObject("oshr_port", typeof(RectTransform));
+
+            go.transform.SetParent(God.theOne.board_go.transform, false);
+            RectTransform rt = go.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+            rt.sizeDelta = new Vector2(3 * GRID_SIZE + 40, 3 * GRID_SIZE + 40);
+
+            rt.anchoredPosition = new Vector2(OSHR_OFFSET_X * GRID_SIZE - 20, OSHR_OFFSET_Y * GRID_SIZE - 20);
+
+            Image bg = go.AddComponent<Image>();
+            bg.sprite = border;
+            bg.type = Image.Type.Sliced;
+        }
+        {
+            GameObject go = new GameObject("border_city", typeof(RectTransform));
+
+            go.transform.SetParent(God.theOne.board_go.transform, false);
+            RectTransform rt = go.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+            rt.sizeDelta = new Vector2(5 * GRID_SIZE + 40, 5 * GRID_SIZE + 40);
+
+            rt.anchoredPosition = new Vector2(CITY_OFFSET_X * GRID_SIZE - 20, CITY_OFFSET_Y * GRID_SIZE - 20);
+
+            Image bg = go.AddComponent<Image>();
+            bg.sprite = border;
+            bg.type = Image.Type.Sliced;
+        }
+        {
+            GameObject go = new GameObject("border_dsrr", typeof(RectTransform));
+
+            go.transform.SetParent(God.theOne.board_go.transform, false);
+            RectTransform rt = go.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+            rt.sizeDelta = new Vector2(3 * GRID_SIZE + 40, 3 * GRID_SIZE + 40);
+
+            rt.anchoredPosition = new Vector2(DSRR_OFFSET_X * GRID_SIZE - 20, DSRR_OFFSET_Y * GRID_SIZE - 20);
+
+            Image bg = go.AddComponent<Image>();
+            bg.sprite = border;
+            bg.type = Image.Type.Sliced;
+        }
+        {
+            GameObject go = new GameObject("border_desert", typeof(RectTransform));
+
+            go.transform.SetParent(God.theOne.board_go.transform, false);
+            RectTransform rt = go.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+            rt.sizeDelta = new Vector2(4 * GRID_SIZE + 40, 4 * GRID_SIZE + 40);
+
+            rt.anchoredPosition = new Vector2(DESERT_OFFSET_X * GRID_SIZE - 20, DESERT_OFFSET_Y * GRID_SIZE - 20);
+
+            Image bg = go.AddComponent<Image>();
+            bg.sprite = border;
+            bg.type = Image.Type.Sliced;
+        }
+    }
 
     static public void DisplayValidSpots(Card target)
     {
@@ -97,6 +199,7 @@ static class Board
             if (port[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             port[x, y] = card;
+            Debug.Log("Add card to port at: " + x + ", " + y);
         }
         else if (pos.x < OSHR_OFFSET_X * GRID_SIZE)
         {
@@ -105,6 +208,7 @@ static class Board
             if (offshore[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             offshore[x, y] = card;
+            Debug.Log("Add card to offshore at: " + x + ", " + y);
         }
         else if (pos.x < CITY_OFFSET_X * GRID_SIZE)
         {
@@ -113,6 +217,7 @@ static class Board
             if (offshoreRoad[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             offshoreRoad[x, y] = card;
+            Debug.Log("Add card to oshr at: " + x + ", " + y);
         }
         else if (pos.x < DSRR_OFFSET_X * GRID_SIZE)
         {
@@ -121,6 +226,7 @@ static class Board
             if (city[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             city[x, y] = card;
+            Debug.Log("Add card to city at: " + x + ", " + y);
         }
         else if (pos.x < DESERT_OFFSET_X * GRID_SIZE)
         {
@@ -129,6 +235,7 @@ static class Board
             if (desertRoad[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             desertRoad[x, y] = card;
+            Debug.Log("Add card to dsrr at: " + x + ", " + y);
         }
         else
         {
@@ -137,6 +244,7 @@ static class Board
             if (desert[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             desert[x, y] = card;
+            Debug.Log("Add card to desert at: " + x + ", " + y);
         }
     }
 

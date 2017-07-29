@@ -24,6 +24,7 @@ class GhostCard : Card
         Image bg = card.AddComponent<Image>();
         bg.sprite = ImageLibrary.GetImage("ghost_mini");
         bg.type = Image.Type.Sliced;
+        bg.color = Color.gray;
 
         God.theOne.activeCards.Add(this);
         card.AddComponent<MiniCardScript>().parent = this;

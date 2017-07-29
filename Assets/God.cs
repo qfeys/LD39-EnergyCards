@@ -15,6 +15,7 @@ public class God : MonoBehaviour {
 
     public Sprite cardBackground;
     public Sprite coal_plant;
+    public Sprite board_border;
     public Font standardFont;
 
     internal List<Card> activeCards;
@@ -27,6 +28,7 @@ public class God : MonoBehaviour {
         if (theOne == null)
             theOne = this;
         activeCards = new List<Card>();
+        Board.Create();
         Deck.Create();
         Card c = new Card("test",Board.Regions.city);
         c.PlaceInHand();
