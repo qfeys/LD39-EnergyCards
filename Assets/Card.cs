@@ -9,31 +9,30 @@ using UnityEngine.EventSystems;
 
 abstract class Card
 {
-    public GameObject handCard;
-    public GameObject boardCard;
+    public GameObject card;
 
     public Card()
     {
-        GameObject go = new GameObject("card", typeof(RectTransform));
+        card = new GameObject("card", typeof(RectTransform));
 
-        go.transform.SetParent(God.theOne.hand.transform, false);
-        RectTransform rt = go.transform as RectTransform;
+        card.transform.SetParent(God.theOne.hand.transform, false);
+        RectTransform rt = card.transform as RectTransform;
         rt.anchorMin = new Vector2(0, 1);
         rt.anchorMax = new Vector2(0, 1);
         rt.pivot = new Vector2(0.5f, 0.5f);
         rt.sizeDelta = new Vector2(140, 200);
 
-        go.AddComponent<LayoutElement>();
+        card.AddComponent<LayoutElement>();
 
-        Image bg = go.AddComponent<Image>();
+        Image bg = card.AddComponent<Image>();
         bg.sprite = God.theOne.carBackground;
         bg.type = Image.Type.Sliced;
         bg.color = Color.blue;
 
-        go.AddComponent<CardScript>().parent = this;
+        card.AddComponent<CardScript>().parent = this;
 
         GameObject imGo = new GameObject("card_image", typeof(RectTransform));
-        imGo.transform.SetParent(go.transform, false);
+        imGo.transform.SetParent(card.transform, false);
         RectTransform imRt = imGo.transform as RectTransform;
         imRt.anchorMin = new Vector2(0.5f, 1);
         imRt.anchorMax = new Vector2(0.5f, 1);
@@ -43,7 +42,7 @@ abstract class Card
         imGo.AddComponent<Image>().sprite = God.theOne.coal_plant;
 
         GameObject txGo = new GameObject("card_text", typeof(RectTransform));
-        txGo.transform.SetParent(go.transform, false);
+        txGo.transform.SetParent(card.transform, false);
         RectTransform txRt = txGo.transform as RectTransform;
         txRt.anchorMin = new Vector2(0.5f, 1);
         txRt.anchorMax = new Vector2(0.5f, 1);
@@ -53,9 +52,38 @@ abstract class Card
         Text txtx = txGo.AddComponent<Text>();
         txtx.text = "This is a coal powered power plant";
         txtx.font = God.theOne.standardFont;
+    }
 
+    void ConvertToMini(Vector2 pos)
+    {
+        UnityEngine.Object.Destroy(card);
+        card = new GameObject("mini_card", typeof(RectTransform));
 
-        Debug.Log("New Card!");
+        card.transform.SetParent(God.theOne.board.transform, false);
+        RectTransform rt = card.transform as RectTransform;
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.sizeDelta = new Vector2(120, 120);
+        rt.anchoredPosition = pos;
+
+        Image bg = card.AddComponent<Image>();
+        bg.sprite = God.theOne.carBackground;
+        bg.type = Image.Type.Sliced;
+        bg.color = Color.red;
+
+        God.theOne.activeCards.Add(this);
+        card.AddComponent<MiniCardScript>().parent = this;
+
+        GameObject imGo = new GameObject("card_image", typeof(RectTransform));
+        imGo.transform.SetParent(card.transform, false);
+        RectTransform imRt = imGo.transform as RectTransform;
+        imRt.anchorMin = new Vector2(0.5f, 0.5f);
+        imRt.anchorMax = new Vector2(0.5f, 0.5f);
+        imRt.pivot = new Vector2(0.5f, 0.5f);
+        imRt.sizeDelta = new Vector2(100, 100);
+        imRt.anchoredPosition = new Vector2(0, 0);
+        imGo.AddComponent<Image>().sprite = God.theOne.coal_plant;
     }
 
     class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
@@ -78,6 +106,11 @@ abstract class Card
             transform.parent.GetChild(0).GetComponent<HandAnimator>().down = false;
             transform.SetParent(transform.parent.GetChild(0));
         }
+    }
+
+    class MiniCardScript : MonoBehaviour
+    {
+        public Card parent;
     }
 }
 class TestCard : Card

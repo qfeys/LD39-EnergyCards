@@ -17,6 +17,7 @@ public class God : MonoBehaviour {
     public Sprite coal_plant;
     public Font standardFont;
 
+    internal List<Card> activeCards;
 
     // Use this for initialization
     void Start () {
