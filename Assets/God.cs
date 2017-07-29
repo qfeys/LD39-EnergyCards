@@ -18,7 +18,6 @@ public class God : MonoBehaviour {
     public Font standardFont;
 
     internal List<Card> activeCards;
-    Board board;
 
     Vector3 mouseposition;
     float mouseZ;
@@ -27,11 +26,10 @@ public class God : MonoBehaviour {
     void Start () {
         if (theOne == null)
             theOne = this;
-        board = new Board();
         activeCards = new List<Card>();
 
-        Card c = new TestCard();
-        board.DisplayValidSpots(c);
+        Card c = new Card("test",Board.Regions.city);
+        c.PlaceInHand();
 
         mouseZ = Camera.main.transform.position.y * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
 	}

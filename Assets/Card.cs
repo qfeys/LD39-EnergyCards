@@ -7,16 +7,23 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-abstract class Card
+class Card
 {
+    public string name;
+    public Board.Regions validRegions;
     public GameObject card;
 
     protected Card() { }
 
-    public Card(string name)
+    public Card(string name, Board.Regions validRegions)
     {
-        Debug.Log("Cards");
-        card = new GameObject("card", typeof(RectTransform));
+        this.name = name;
+        this.validRegions = validRegions;
+    }
+
+    public void PlaceInHand()
+    {
+        card = new GameObject("card_" + name, typeof(RectTransform));
 
         card.transform.SetParent(God.theOne.hand.transform, false);
         RectTransform rt = card.transform as RectTransform;
@@ -73,7 +80,6 @@ abstract class Card
         Image bg = card.AddComponent<Image>();
         bg.sprite = God.theOne.cardBackground;
         bg.type = Image.Type.Sliced;
-        bg.color = Color.red;
 
         God.theOne.activeCards.Add(this);
         card.AddComponent<MiniCardScript>().parent = this;
@@ -89,8 +95,6 @@ abstract class Card
         imGo.AddComponent<Image>().sprite = God.theOne.coal_plant;
     }
 
-    public abstract Board.Regions ValidRegions();
-
     class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         public Card parent;
@@ -99,6 +103,7 @@ abstract class Card
         {
             transform.parent.GetComponent<HandAnimator>().down = true;
             transform.SetParent(transform.parent.parent);
+            Board.DisplayValidSpots(parent);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -109,42 +114,34 @@ abstract class Card
         public void OnEndDrag(PointerEventData eventData)
         {
             transform.parent.GetChild(0).GetComponent<HandAnimator>().down = false;
-            transform.SetParent(transform.parent.GetChild(0));
 
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventData, results);
             if(results.Any(r=>r.gameObject.name == "Hand"))
             {
-                Debug.Log("HAND FOUND!");
-
             }
             else if(results.Any(r=>r.gameObject.name == "Board"))
             {
-                RaycastResult cast = results.Find(r => r.gameObject.name == "Board");
-                Vector2 pos;
-
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    God.theOne.board_go.transform.parent as RectTransform, Input.mousePosition,
-                    God.theOne.board_go.transform.parent.GetComponent<Canvas>().worldCamera,
-                    out pos);
-                Debug.Log("Board Found at "+ pos);
+                if (results.Any(r=>r.gameObject.name == "ghost_card"))
+                {
+                    //Vector2 pos;
+                    //RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    //    God.theOne.board_go.transform.parent as RectTransform, Input.mousePosition,
+                    //    God.theOne.board_go.transform.parent.GetComponent<Canvas>().worldCamera,
+                    //    out pos);
+                    Vector2 pos = ((RectTransform)results.Find(r => r.gameObject.name == "ghost_card").gameObject.transform).anchoredPosition;
+                    Board.AddCard(parent, pos);
+                    God.theOne.activeCards.Add(parent);
+                    parent.ConvertToMini(pos);
+                }
             }
+            transform.SetParent(transform.parent.GetChild(0));
+            Board.ClearGhosts();
         }
     }
 
     protected class MiniCardScript : MonoBehaviour
     {
         public Card parent;
-    }
-}
-class TestCard : Card
-{
-    public TestCard() : base("test_card")
-    {
-    }
-
-    public override Board.Regions ValidRegions()
-    {
-        return Board.Regions.Road|Board.Regions.city;
     }
 }

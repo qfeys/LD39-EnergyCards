@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-class Board
+static class Board
 {
-    Card[,] city = new Card[5, 5];
-    Card[,] port = new Card[3, 3];
-    Card[,] offshore = new Card[4, 4];
-    Card[,] offshoreRoad = new Card[3, 3];
-    Card[,] desert = new Card[4, 4];
-    Card[,] desertRoad = new Card[3, 3];
+    static Card[,] city = new Card[5, 5];
+    static Card[,] port = new Card[3, 3];
+    static Card[,] offshore = new Card[4, 4];
+    static Card[,] offshoreRoad = new Card[3, 3];
+    static Card[,] desert = new Card[4, 4];
+    static Card[,] desertRoad = new Card[3, 3];
 
     [Flags] public enum Regions { city = 1, port = 2, offshore = 4, offshoreRoad = 8, desert = 16, desertRoad = 32, Road = offshoreRoad | desertRoad }
 
-    public void DisplayValidSpots(Card target)
+    static public void DisplayValidSpots(Card target)
     {
-        Regions r = target.ValidRegions();
+        Regions r = target.validRegions;
         List<Vector2> locations = new List<Vector2>();
         if ((r & Regions.city) == Regions.city)
         {
@@ -88,12 +88,69 @@ class Board
         GhostCard.CreateGhostsAt(locations);
     }
 
-    Vector2 CityLoc(int x, int y) { return new Vector2((CITY_OFFSET_X + x) * GRID_SIZE, (CITY_OFFSET_Y + y) * GRID_SIZE); }
-    Vector2 PortLoc(int x, int y) { return new Vector2((PORT_OFFSET_X + x) * GRID_SIZE, (PORT_OFFSET_Y + y) * GRID_SIZE); }
-    Vector2 OshLoc(int x, int y) { return new Vector2((OFFSHORE_OFFSET_X + x) * GRID_SIZE, (OFFSHORE_OFFSET_Y + y) * GRID_SIZE); }
-    Vector2 OshrLoc(int x, int y) { return new Vector2((OSHR_OFFSET_X + x) * GRID_SIZE, (OSHR_OFFSET_Y + y) * GRID_SIZE); }
-    Vector2 DesertLoc(int x, int y) { return new Vector2((DESERT_OFFSET_X + x) * GRID_SIZE, (DESERT_OFFSET_Y + y) * GRID_SIZE); }
-    Vector2 DsrrLoc(int x, int y) { return new Vector2((DSRR_OFFSET_X + x) * GRID_SIZE, (DSRR_OFFSET_Y + y) * GRID_SIZE); }
+    internal static void AddCard(Card card, Vector2 pos)
+    {
+        if (pos.y < CITY_OFFSET_Y * GRID_SIZE)
+        {
+            int x = (int)(pos.x / GRID_SIZE - PORT_OFFSET_X);
+            int y = (int)(pos.y / GRID_SIZE - PORT_OFFSET_Y);
+            if (port[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            port[x, y] = card;
+        }
+        else if (pos.x < OSHR_OFFSET_X * GRID_SIZE)
+        {
+            int x = (int)(pos.x / GRID_SIZE - OFFSHORE_OFFSET_X);
+            int y = (int)(pos.y / GRID_SIZE - OFFSHORE_OFFSET_Y);
+            if (offshore[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            offshore[x, y] = card;
+        }
+        else if (pos.x < CITY_OFFSET_X * GRID_SIZE)
+        {
+            int x = (int)(pos.x / GRID_SIZE - OSHR_OFFSET_X);
+            int y = (int)(pos.y / GRID_SIZE - OSHR_OFFSET_Y);
+            if (offshoreRoad[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            offshoreRoad[x, y] = card;
+        }
+        else if (pos.x < DSRR_OFFSET_X * GRID_SIZE)
+        {
+            int x = (int)(pos.x / GRID_SIZE - CITY_OFFSET_X);
+            int y = (int)(pos.y / GRID_SIZE - CITY_OFFSET_Y);
+            if (city[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            city[x, y] = card;
+        }
+        else if (pos.x < DESERT_OFFSET_X * GRID_SIZE)
+        {
+            int x = (int)(pos.x / GRID_SIZE - DSRR_OFFSET_X);
+            int y = (int)(pos.y / GRID_SIZE - DSRR_OFFSET_Y);
+            if (desertRoad[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            desertRoad[x, y] = card;
+        }
+        else
+        {
+            int x = (int)(pos.x / GRID_SIZE - DESERT_OFFSET_X);
+            int y = (int)(pos.y / GRID_SIZE - DESERT_OFFSET_Y);
+            if (desert[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            desert[x, y] = card;
+        }
+    }
+
+    internal static void ClearGhosts()
+    {
+        GhostCard.RemoveGhosts();
+    }
+
+    static Vector2 CityLoc(int x, int y) { return new Vector2((CITY_OFFSET_X + x) * GRID_SIZE, (CITY_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 PortLoc(int x, int y) { return new Vector2((PORT_OFFSET_X + x) * GRID_SIZE, (PORT_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 OshLoc(int x, int y) { return new Vector2((OFFSHORE_OFFSET_X + x) * GRID_SIZE, (OFFSHORE_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 OshrLoc(int x, int y) { return new Vector2((OSHR_OFFSET_X + x) * GRID_SIZE, (OSHR_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 DesertLoc(int x, int y) { return new Vector2((DESERT_OFFSET_X + x) * GRID_SIZE, (DESERT_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 DsrrLoc(int x, int y) { return new Vector2((DSRR_OFFSET_X + x) * GRID_SIZE, (DSRR_OFFSET_Y + y) * GRID_SIZE); }
 
     const float GRID_SIZE = 120;
     const float CITY_OFFSET_X = 10;

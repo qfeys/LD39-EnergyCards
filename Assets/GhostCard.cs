@@ -3,11 +3,10 @@ using UnityEngine;
 using UnityEngine.UI;
 class GhostCard : Card
 {
-    public override Board.Regions ValidRegions()
-    {
-        return Board.Regions.city | Board.Regions.desert | Board.Regions.offshore | Board.Regions.port | Board.Regions.Road;
-    }
-
+    public new string name = "ghost";
+    public new Board.Regions validRegions =
+        Board.Regions.city | Board.Regions.desert | Board.Regions.offshore | Board.Regions.port | Board.Regions.Road;
+    
     static List<GhostCard> presentGhosts;
 
     public GhostCard(Vector2 pos)
@@ -25,7 +24,6 @@ class GhostCard : Card
         Image bg = card.AddComponent<Image>();
         bg.sprite = ImageLibrary.GetImage("ghost_mini");
         bg.type = Image.Type.Sliced;
-        bg.color = Color.red;
 
         God.theOne.activeCards.Add(this);
         card.AddComponent<MiniCardScript>().parent = this;
