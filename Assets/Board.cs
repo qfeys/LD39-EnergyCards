@@ -115,6 +115,90 @@ static class Board
             bg.sprite = border;
             bg.type = Image.Type.Sliced;
         }
+        {
+            InfoTable ofshStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Power Generation",()=>State.SeaEnergy),
+                new Tuple<string, Func<object>>("Gas Production",()=>State.SeaGasProd)
+            }, 500, 36);
+            RectTransform rt = ofshStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 1);
+
+            rt.anchoredPosition = new Vector2(OFFSHORE_OFFSET_X * GRID_SIZE + 60, OFFSHORE_OFFSET_Y * GRID_SIZE - 20);
+        }
+        {
+            InfoTable ofshRdStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Powerline Capacity",()=>State.SeaCables),
+                new Tuple<string, Func<object>>("Gasline Capacity",()=>State.SeaPipes)
+            }, 500, 36);
+            RectTransform rt = ofshRdStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+
+            rt.anchoredPosition = new Vector2(OSHR_OFFSET_X * GRID_SIZE - 40, (OSHR_OFFSET_Y + 3) * GRID_SIZE + 40);
+        }
+        {
+            InfoTable cityStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Power Generation",()=>State.CityEnergy),
+                new Tuple<string, Func<object>>("Battery Storage",()=>State.CityEnergyStore),
+                new Tuple<string, Func<object>>("Coal consumtion",()=>State.CityCoal),
+                new Tuple<string, Func<object>>("Oil consumtion",()=>State.CityOil),
+                new Tuple<string, Func<object>>("Oil Storage",()=>State.CityOilStore),
+                new Tuple<string, Func<object>>("Gas consumtion",()=>State.CityOil),
+                new Tuple<string, Func<object>>("Gas Storage",()=>State.CityGasStore)
+            }, 500, 36);
+            RectTransform rt = cityStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(1, 1);
+
+            rt.anchoredPosition = new Vector2(CITY_OFFSET_X * GRID_SIZE - 40, CITY_OFFSET_Y * GRID_SIZE + 40);
+        }
+        {
+            InfoTable portStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Power Generation",()=>State.PortEnergy),
+                new Tuple<string, Func<object>>("Coal income",()=>State.PortCoal),
+                new Tuple<string, Func<object>>("Oil income",()=>State.PortOil),
+                new Tuple<string, Func<object>>("Gas consumtion",()=>State.PortGas)
+            }, 500, 36);
+            RectTransform rt = portStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 1);
+
+            rt.anchoredPosition = new Vector2((CITY_OFFSET_X +4)* GRID_SIZE + 40, CITY_OFFSET_Y * GRID_SIZE - 80);
+        }
+        {
+            InfoTable DsrRdStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Powerline Capacity",()=>State.DesertCables),
+                new Tuple<string, Func<object>>("Oilline Capacity",()=>State.DesertOilPipes),
+                new Tuple<string, Func<object>>("Gasline Capacity",()=>State.DesertGasPipes)
+            }, 500, 36);
+            RectTransform rt = DsrRdStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 0);
+
+            rt.anchoredPosition = new Vector2(DSRR_OFFSET_X * GRID_SIZE - 40, (DSRR_OFFSET_Y + 3) * GRID_SIZE + 40);
+        }
+        {
+            InfoTable desStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Power Generation",()=>State.DesertEnergy),
+                new Tuple<string, Func<object>>("Battery Storage",()=>State.DesertEnergyStore),
+                new Tuple<string, Func<object>>("Oil Production",()=>State.DesertOilProd),
+                new Tuple<string, Func<object>>("Oil Storage",()=>State.DesertOilStore),
+                new Tuple<string, Func<object>>("Gas Production",()=>State.DesertGasProd),
+                new Tuple<string, Func<object>>("Gas Storage",()=>State.DesertGasStore)
+            }, 500, 36);
+            RectTransform rt = desStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 0);
+            rt.anchorMax = new Vector2(0, 0);
+            rt.pivot = new Vector2(0, 1);
+
+            rt.anchoredPosition = new Vector2(DESERT_OFFSET_X * GRID_SIZE + 00, DESERT_OFFSET_Y * GRID_SIZE - 20);
+        }
     }
 
     static public void DisplayValidSpots(Card target)
@@ -277,12 +361,6 @@ static class Board
             return cards;
         } }
 
-    public static float EnergyAvailable { get {
-            return 0;
-        } }
-    public static float RepDiff { get; internal set; }
-    public static float GWdiff { get; internal set; }
-
     static Vector2 CityLoc(int x, int y) { return new Vector2((CITY_OFFSET_X + x) * GRID_SIZE, (CITY_OFFSET_Y + y) * GRID_SIZE); }
     static Vector2 PortLoc(int x, int y) { return new Vector2((PORT_OFFSET_X + x) * GRID_SIZE, (PORT_OFFSET_Y + y) * GRID_SIZE); }
     static Vector2 OshLoc(int x, int y) { return new Vector2((OFFSHORE_OFFSET_X + x) * GRID_SIZE, (OFFSHORE_OFFSET_Y + y) * GRID_SIZE); }
@@ -303,4 +381,300 @@ static class Board
     const float DESERT_OFFSET_Y = 6.5f;
     const float DSRR_OFFSET_X = 16;
     const float DSRR_OFFSET_Y = 7;
+
+    static class State
+    {
+        public static float SeaGasProd
+        {
+            get
+            {
+                float gas = 20; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (offshore[i, j] != null) gas += Data.Gas(offshore[i, j]);
+                return gas;
+            }
+        }
+        public static float SeaEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (offshore[i, j] != null) val += Data.Energy(offshore[i, j]);
+                return val;
+            }
+        }
+        public static float SeaPipes
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (offshoreRoad[i, j] != null) val += Data.Gas(offshoreRoad[i, j]);
+                return val;
+            }
+        }
+        public static float SeaCables
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (offshoreRoad[i, j] != null) val += Data.Flow(offshoreRoad[i, j]);
+                return val;
+            }
+        }
+        public static float PortCoal
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null) val += Data.Coal(port[i, j]);
+                return val;
+            }
+        }
+        public static float PortOil
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null) val += Data.Oil(port[i, j]);
+                return val;
+            }
+        }
+        public static float PortGas
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null) val += Data.Gas(port[i, j]);
+                return val;
+            }
+        }
+        public static float PortEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null) val += Data.Energy(port[i, j]);
+                return val;
+            }
+        }
+        //public static float PortOilStore
+        //{
+        //    get
+        //    {
+        //        float val = 0; // base
+        //        for (int i = 0; i < 3; i++)
+        //            for (int j = 0; j < 3; j++)
+        //                if (port[i, j] != null) val += Data.StoreOil(port[i, j]);
+        //        return val;
+        //    }
+        //}
+        //public static float PortGasStore
+        //{
+        //    get
+        //    {
+        //        float val = 0; // base
+        //        for (int i = 0; i < 3; i++)
+        //            for (int j = 0; j < 3; j++)
+        //                if (port[i, j] != null) val += Data.StoreGas(port[i, j]);
+        //        return val;
+        //    }
+        //}
+        public static float CityEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.Energy(city[i, j]);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (offshoreRoad[i, j] != null) val += Data.Energy(offshoreRoad[i, j]);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (desertRoad[i, j] != null) val += Data.Energy(desertRoad[i, j]);
+                return val;
+            }
+        }
+        public static float CityCoal
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.Coal(city[i, j]);
+                return val;
+            }
+        }
+        public static float CityOil
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.Oil(city[i, j]);
+                return val;
+            }
+        }
+        public static float CityGas
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.Gas(city[i, j]);
+                return val;
+            }
+        }
+        public static float CityOilStore
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.StoreOil(city[i, j]);
+                return val;
+            }
+        }
+        public static float CityGasStore
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.StoreGas(city[i, j]);
+                return val;
+            }
+        }
+        public static float CityEnergyStore
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.StorePow(city[i, j]);
+                return val;
+            }
+        }
+        public static float DesertOilPipes
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (desertRoad[i, j] != null) val += Data.Oil(desertRoad[i, j]);
+                return val;
+            }
+        }
+        public static float DesertGasPipes
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (desertRoad[i, j] != null) val += Data.Gas(desertRoad[i, j]);
+                return val;
+            }
+        }
+        public static float DesertCables
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (desertRoad[i, j] != null) val += Data.Flow(desertRoad[i, j]);
+                return val;
+            }
+        }
+        public static float DesertEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null) val += Data.Energy(desert[i, j]);
+                return val;
+            }
+        }
+        public static float DesertOilProd
+        {
+            get
+            {
+                float val = 20; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null) val += Data.Oil(desert[i, j]);
+                return val;
+            }
+        }
+        public static float DesertGasProd
+        {
+            get
+            {
+                float gas = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null) gas += Data.Gas(desert[i, j]);
+                return gas;
+            }
+        }
+        public static float DesertEnergyStore
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null) val += Data.StorePow(desert[i, j]);
+                return val;
+            }
+        }
+        public static float DesertOilStore
+        {
+            get
+            {
+                float val = 20; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null) val += Data.StoreOil(desert[i, j]);
+                return val;
+            }
+        }
+        public static float DesertGasStore
+        {
+            get
+            {
+                float gas = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null) gas += Data.StoreGas(desert[i, j]);
+                return gas;
+            }
+        }
+    }
 }
