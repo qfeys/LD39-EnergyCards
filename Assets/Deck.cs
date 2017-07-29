@@ -63,7 +63,8 @@ static class Deck
             { new Card("pol_fortify_nuke", Board.Regions.city), 5 },
             { new Card("pol_fortify_wind", Board.Regions.city), 5 },
             { new Card("pol_fortify_solar", Board.Regions.city), 5 },
-            { new Card("pol_extra_card", Board.Regions.city), 5 }
+            { new Card("pol_extra_card", Board.Regions.city), 5 },
+            { new Card("pol_reshufel", Board.Regions.city), 5 }
         };
         deck = new List<Card>();
         foreach(var kvp in lib)
@@ -89,7 +90,7 @@ static class Deck
         }
     }
 
-    private static void TakeNext()
+    public static void TakeNext()
     {
         deck[0].PlaceInHand();
         deck.RemoveAt(0);
@@ -99,7 +100,7 @@ static class Deck
     {
         public void OnPointerClick(PointerEventData eventData)
         {
-            Deck.TakeNext();
+            //TakeNext();
         }
     }
 }

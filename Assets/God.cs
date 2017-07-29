@@ -30,8 +30,8 @@ public class God : MonoBehaviour {
         activeCards = new List<Card>();
         Board.Create();
         Deck.Create();
-        Card c = new Card("test",Board.Regions.city);
-        c.PlaceInHand();
+        Bin.Create();
+        GameMaster.Start();
 
         mouseZ = Camera.main.transform.position.y * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
 	}
@@ -50,5 +50,10 @@ public class God : MonoBehaviour {
         }
         mouseposition = Input.mousePosition;
         mouseposition.z = mouseZ;
+    }
+
+    public IEnumerator Perform(IEnumerator coroutine)
+    {
+        yield return StartCoroutine(coroutine);
     }
 }

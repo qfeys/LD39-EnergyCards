@@ -13,7 +13,9 @@ class Card
     public Board.Regions validRegions;
     public GameObject card;
     private Card key;
-
+    public static bool canPlay = false;
+    internal static bool canBin = false;
+    
     protected Card() { }
 
     public Card(string name, Board.Regions validRegions)
@@ -67,7 +69,7 @@ class Card
         txRt.sizeDelta = new Vector2(120, 70);
         txRt.anchoredPosition = new Vector2(0, -120);
         Text txtx = txGo.AddComponent<Text>();
-        txtx.text = "This is a coal powered power plant";
+        txtx.text = name;
         txtx.font = God.theOne.standardFont;
     }
 
@@ -120,16 +122,19 @@ class Card
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            transform.parent.GetChild(0).GetComponent<HandAnimator>().down = false;
-
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(eventData, results);
-            if(results.Any(r=>r.gameObject.name == "Hand"))
+
+            transform.SetParent(transform.parent.GetChild(0));
+            Board.ClearGhosts();
+            transform.parent.GetComponent<HandAnimator>().down = false;
+
+            if (results.Any(r => r.gameObject.name == "Hand"))
             {
             }
-            else if(results.Any(r=>r.gameObject.name == "Board"))
+            else if (results.Any(r => r.gameObject.name == "Board") && canPlay)
             {
-                if (results.Any(r=>r.gameObject.name == "ghost_card"))
+                if (results.Any(r => r.gameObject.name == "ghost_card"))
                 {
                     //Vector2 pos;
                     //RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -140,10 +145,14 @@ class Card
                     Board.AddCard(parent, pos);
                     God.theOne.activeCards.Add(parent);
                     parent.ConvertToMini(pos);
+                    canPlay = false;
                 }
+            }else if(results.Any(r=>r.gameObject.name == "bin") && canBin)
+            {
+                Bin.Dispose(parent);
+                canBin = false;
+                Destroy(gameObject);
             }
-            transform.SetParent(transform.parent.GetChild(0));
-            Board.ClearGhosts();
         }
     }
 
