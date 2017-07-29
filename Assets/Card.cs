@@ -105,6 +105,25 @@ abstract class Card
         {
             transform.parent.GetChild(0).GetComponent<HandAnimator>().down = false;
             transform.SetParent(transform.parent.GetChild(0));
+
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+            if(results.Any(r=>r.gameObject.name == "Hand"))
+            {
+                Debug.Log("HAND FOUND!");
+
+            }
+            else if(results.Any(r=>r.gameObject.name == "Board"))
+            {
+                RaycastResult cast = results.Find(r => r.gameObject.name == "Board");
+                Vector2 pos;
+
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    God.theOne.board.transform.parent as RectTransform, Input.mousePosition,
+                    God.theOne.board.transform.parent.GetComponent<Canvas>().worldCamera,
+                    out pos);
+                Debug.Log("Board Found at "+ pos);
+            }
         }
     }
 
