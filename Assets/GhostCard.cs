@@ -14,11 +14,11 @@ class GhostCard : Card
     {
         card = new GameObject("ghost_card", typeof(RectTransform));
 
-        card.transform.SetParent(God.theOne.board.transform, false);
+        card.transform.SetParent(God.theOne.board_go.transform, false);
         RectTransform rt = card.transform as RectTransform;
-        rt.anchorMin = new Vector2(0.5f, 0.5f);
-        rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchorMin = new Vector2(0, 0);
+        rt.anchorMax = new Vector2(0, 0);
+        rt.pivot = new Vector2(0, 0);
         rt.sizeDelta = new Vector2(120, 120);
         rt.anchoredPosition = pos;
 

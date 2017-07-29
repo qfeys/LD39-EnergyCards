@@ -11,8 +11,11 @@ abstract class Card
 {
     public GameObject card;
 
-    public Card()
+    protected Card() { }
+
+    public Card(string name)
     {
+        Debug.Log("Cards");
         card = new GameObject("card", typeof(RectTransform));
 
         card.transform.SetParent(God.theOne.hand.transform, false);
@@ -59,11 +62,11 @@ abstract class Card
         UnityEngine.Object.Destroy(card);
         card = new GameObject("mini_card", typeof(RectTransform));
 
-        card.transform.SetParent(God.theOne.board.transform, false);
+        card.transform.SetParent(God.theOne.board_go.transform, false);
         RectTransform rt = card.transform as RectTransform;
-        rt.anchorMin = new Vector2(0.5f, 0.5f);
-        rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchorMin = new Vector2(0, 0);
+        rt.anchorMax = new Vector2(0, 0);
+        rt.pivot = new Vector2(0, 0);
         rt.sizeDelta = new Vector2(120, 120);
         rt.anchoredPosition = pos;
 
@@ -121,8 +124,8 @@ abstract class Card
                 Vector2 pos;
 
                 RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    God.theOne.board.transform.parent as RectTransform, Input.mousePosition,
-                    God.theOne.board.transform.parent.GetComponent<Canvas>().worldCamera,
+                    God.theOne.board_go.transform.parent as RectTransform, Input.mousePosition,
+                    God.theOne.board_go.transform.parent.GetComponent<Canvas>().worldCamera,
                     out pos);
                 Debug.Log("Board Found at "+ pos);
             }
@@ -136,8 +139,12 @@ abstract class Card
 }
 class TestCard : Card
 {
+    public TestCard() : base("test_card")
+    {
+    }
+
     public override Board.Regions ValidRegions()
     {
-        return Board.Regions.Road;
+        return Board.Regions.Road|Board.Regions.city;
     }
 }

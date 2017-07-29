@@ -11,13 +11,14 @@ public class God : MonoBehaviour {
     public float carbonLevel;
 
     public GameObject hand;
-    public GameObject board;
+    public GameObject board_go;
 
     public Sprite cardBackground;
     public Sprite coal_plant;
     public Font standardFont;
 
     internal List<Card> activeCards;
+    Board board;
 
     Vector3 mouseposition;
     float mouseZ;
@@ -26,7 +27,11 @@ public class God : MonoBehaviour {
     void Start () {
         if (theOne == null)
             theOne = this;
-        new TestCard();
+        board = new Board();
+        activeCards = new List<Card>();
+
+        Card c = new TestCard();
+        board.DisplayValidSpots(c);
 
         mouseZ = Camera.main.transform.position.y * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
 	}
