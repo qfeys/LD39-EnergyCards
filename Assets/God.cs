@@ -15,13 +15,14 @@ public class God : MonoBehaviour {
 
     public Sprite carBackground;
     public Sprite coal_plant;
+    public Font standardFont;
 
 
     // Use this for initialization
     void Start () {
         if (theOne == null)
             theOne = this;
-        Card.AddToHand();
+        new TestCard();
 	}
 	
 	// Update is called once per frame

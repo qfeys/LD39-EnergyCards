@@ -12,7 +12,7 @@ abstract class Card
     public GameObject handCard;
     public GameObject boardCard;
 
-    public static GameObject AddToHand()
+    public Card()
     {
         GameObject go = new GameObject("card", typeof(RectTransform));
 
@@ -25,18 +25,43 @@ abstract class Card
 
         go.AddComponent<LayoutElement>();
 
-        Image im = go.AddComponent<Image>();
-        im.sprite = God.theOne.carBackground;
-        im.type = Image.Type.Sliced;
-        im.color = Color.blue;
+        Image bg = go.AddComponent<Image>();
+        bg.sprite = God.theOne.carBackground;
+        bg.type = Image.Type.Sliced;
+        bg.color = Color.blue;
 
-        go.AddComponent<CardScript>();
+        go.AddComponent<CardScript>().parent = this;
+
+        GameObject imGo = new GameObject("card_image", typeof(RectTransform));
+        imGo.transform.SetParent(go.transform, false);
+        RectTransform imRt = imGo.transform as RectTransform;
+        imRt.anchorMin = new Vector2(0.5f, 1);
+        imRt.anchorMax = new Vector2(0.5f, 1);
+        imRt.pivot = new Vector2(0.5f, 1);
+        imRt.sizeDelta = new Vector2(120, 100);
+        imRt.anchoredPosition = new Vector2(0, -10);
+        imGo.AddComponent<Image>().sprite = God.theOne.coal_plant;
+
+        GameObject txGo = new GameObject("card_text", typeof(RectTransform));
+        txGo.transform.SetParent(go.transform, false);
+        RectTransform txRt = txGo.transform as RectTransform;
+        txRt.anchorMin = new Vector2(0.5f, 1);
+        txRt.anchorMax = new Vector2(0.5f, 1);
+        txRt.pivot = new Vector2(0.5f, 1);
+        txRt.sizeDelta = new Vector2(120, 70);
+        txRt.anchoredPosition = new Vector2(0, -120);
+        Text txtx = txGo.AddComponent<Text>();
+        txtx.text = "This is a coal powered power plant";
+        txtx.font = God.theOne.standardFont;
+
+
         Debug.Log("New Card!");
-        return go;
     }
 
     class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
+        public Card parent;
+
         public void OnBeginDrag(PointerEventData eventData)
         {
             transform.parent.GetComponent<HandAnimator>().down = true;
@@ -54,5 +79,8 @@ abstract class Card
             transform.SetParent(transform.parent.GetChild(0));
         }
     }
+}
+class TestCard : Card
+{
 
 }

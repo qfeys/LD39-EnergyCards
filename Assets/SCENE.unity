@@ -645,6 +645,8 @@ MonoBehaviour:
   hand: {fileID: 825947817}
   board: {fileID: 353878312}
   carBackground: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  coal_plant: {fileID: 21300000, guid: c88bfa32731fcd341beada2d0404c971, type: 3}
+  standardFont: {fileID: 12800000, guid: 7dd337028bae93f4ba3086ffc17f629c, type: 3}
 --- !u!1 &1561250051
 GameObject:
   m_ObjectHideFlags: 0
