@@ -36,6 +36,8 @@ static class ImageLibrary
 
     public static Sprite GetImage(string name)
     {
+        if (name == "background_minicards")
+            return God.theOne.miniCardBackground;
         if (dict.ContainsKey(name))
         {
             Texture2D t = dict[name];
@@ -44,7 +46,7 @@ static class ImageLibrary
             return sp;
         }
         Debug.Log("Failed loading graphic: " + name);
-        return God.theOne.cardBackground;
+        return God.theOne.miniCardBackground;
     }
 }
 

@@ -201,8 +201,8 @@ static class Board
         }
         {
             InfoTable GWStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Global warming",()=> "+" + GameMaster.globalWarming + "°C")
-            }, 800, 54);
+                new Tuple<string, Func<object>>("Global warming",()=> "+" + GameMaster.globalWarming.ToString("0.000") + "°C")
+            }, 900, 54);
             RectTransform rt = GWStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 1);
             rt.anchorMax = new Vector2(0, 1);
@@ -255,7 +255,7 @@ static class Board
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    if (city[i, j] == null)
+                    if (port[i, j] == null)
                         locations.Add(PortLoc(i, j));
                 }
             }
@@ -266,7 +266,7 @@ static class Board
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (city[i, j] == null)
+                    if (offshore[i, j] == null)
                         locations.Add(OshLoc(i, j));
                 }
             }
@@ -277,7 +277,7 @@ static class Board
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    if (city[i, j] == null)
+                    if (offshoreRoad[i, j] == null)
                         locations.Add(OshrLoc(i, j));
                 }
             }
@@ -288,7 +288,7 @@ static class Board
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    if (city[i, j] == null)
+                    if (desert[i, j] == null)
                         locations.Add(DesertLoc(i, j));
                 }
             }
@@ -299,7 +299,7 @@ static class Board
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    if (city[i, j] == null)
+                    if (desertRoad[i, j] == null)
                         locations.Add(DsrrLoc(i, j));
                 }
             }
@@ -373,11 +373,13 @@ static class Board
             if (city[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             city[x, y] = card;
+            card.CreateMini(CityLoc(x, y));
             break;
         case Regions.port:
             if (port[x, y] != null)
                 throw new Exception("Cant put card at " + x + ", " + y);
             port[x, y] = card;
+            card.CreateMini(PortLoc(x, y));
             break;
         }
     }
@@ -387,7 +389,7 @@ static class Board
         GhostCard.RemoveGhosts();
     }
 
-    static List<Card> allCards { get
+    static List<Card> AllCards { get
         {
             List<Card> cards = new List<Card>();
             for (int i = 0; i < 5; i++)
@@ -411,12 +413,12 @@ static class Board
             return cards;
         } }
 
-    static Vector2 CityLoc(int x, int y) { return new Vector2((CITY_OFFSET_X + x) * GRID_SIZE, (CITY_OFFSET_Y + y) * GRID_SIZE); }
-    static Vector2 PortLoc(int x, int y) { return new Vector2((PORT_OFFSET_X + x) * GRID_SIZE, (PORT_OFFSET_Y + y) * GRID_SIZE); }
-    static Vector2 OshLoc(int x, int y) { return new Vector2((OFFSHORE_OFFSET_X + x) * GRID_SIZE, (OFFSHORE_OFFSET_Y + y) * GRID_SIZE); }
-    static Vector2 OshrLoc(int x, int y) { return new Vector2((OSHR_OFFSET_X + x) * GRID_SIZE, (OSHR_OFFSET_Y + y) * GRID_SIZE); }
-    static Vector2 DesertLoc(int x, int y) { return new Vector2((DESERT_OFFSET_X + x) * GRID_SIZE, (DESERT_OFFSET_Y + y) * GRID_SIZE); }
-    static Vector2 DsrrLoc(int x, int y) { return new Vector2((DSRR_OFFSET_X + x) * GRID_SIZE, (DSRR_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 CityLoc(int x, int y)    { return new Vector2((CITY_OFFSET_X + x) * GRID_SIZE,   (CITY_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 PortLoc(int x, int y)    { return new Vector2((PORT_OFFSET_X + x) * GRID_SIZE,   (PORT_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 OshLoc(int x, int y)     { return new Vector2((OFFSHORE_OFFSET_X + x) * GRID_SIZE, (OFFSHORE_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 OshrLoc(int x, int y)    { return new Vector2((OSHR_OFFSET_X + x) * GRID_SIZE,   (OSHR_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 DesertLoc(int x, int y)  { return new Vector2((DESERT_OFFSET_X + x) * GRID_SIZE, (DESERT_OFFSET_Y + y) * GRID_SIZE); }
+    static Vector2 DsrrLoc(int x, int y)    { return new Vector2((DSRR_OFFSET_X + x) * GRID_SIZE,   (DSRR_OFFSET_Y + y) * GRID_SIZE); }
 
     const float GRID_SIZE = 120;
     const float CITY_OFFSET_X = 10;
@@ -742,7 +744,7 @@ static class Board
         {
             get
             {
-                return allCards.Sum(c => Data.Warming(c));
+                return AllCards.Sum(c => Data.Warming(c));
             }
         }
         public static float TotalResistance

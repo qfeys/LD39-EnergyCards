@@ -12,7 +12,6 @@ class Card
     public string name;
     public Board.Regions validRegions;
     public GameObject card;
-    private Card key;
     public static bool canPlay = false;
     internal static bool canBin = false;
     
@@ -82,6 +81,11 @@ class Card
     void ConvertToMini(Vector2 pos)
     {
         UnityEngine.Object.Destroy(card);
+        CreateMini(pos);
+    }
+
+    internal void CreateMini(Vector2 pos)
+    {
         card = new GameObject("mini_card", typeof(RectTransform));
 
         card.transform.SetParent(God.theOne.board_go.transform, false);
@@ -93,8 +97,15 @@ class Card
         rt.anchoredPosition = pos;
 
         Image bg = card.AddComponent<Image>();
-        bg.sprite = God.theOne.cardBackground;
-        bg.type = Image.Type.Sliced;
+        bg.sprite = ImageLibrary.GetImage("background_minicards");
+        if(name != "city")
+            switch (name.Substring(0, 5))
+            {
+            case "plant": bg.color = new Color(1, 0.94f, 0.25f, 1); break;
+            case "trans": bg.color = new Color(1, 0.25f, 0.25f, 1); break;
+            case "store": bg.color = new Color(0.25f, 1, 0.25f, 1); break;
+            case "polit": bg.color = new Color(0.25f, 0.25f, 1, 1); break;
+            }
 
         God.theOne.activeCards.Add(this);
         card.AddComponent<MiniCardScript>().parent = this;

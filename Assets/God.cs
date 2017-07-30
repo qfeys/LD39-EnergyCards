@@ -10,8 +10,7 @@ public class God : MonoBehaviour {
     public GameObject hand;
     public GameObject board_go;
 
-    public Sprite cardBackground;
-    public Sprite coal_plant;
+    public Sprite miniCardBackground;
     public Sprite board_border;
     public Font standardFont;
 
