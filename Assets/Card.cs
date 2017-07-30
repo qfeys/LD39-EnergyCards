@@ -14,7 +14,8 @@ class Card
     public GameObject card;
     public static bool canPlay = false;
     internal static bool canBin = false;
-    internal static bool cardDestruction = false;
+    internal static bool CardDestruction { get { return _cardDestruction; } set { _cardDestruction = value; God.theOne.hand.GetComponent<HandAnimator>().fullyDown = value; } }
+    internal static bool _cardDestruction = false;
 
     protected Card() { }
 
@@ -185,7 +186,7 @@ class Card
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (cardDestruction)
+            if (CardDestruction)
             {
                 parent.DestroyMiniCard();
                 Destroy(this.gameObject);

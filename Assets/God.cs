@@ -68,7 +68,7 @@ public class God : MonoBehaviour {
 
     public void EnableCardDestruction()
     {
-        Card.cardDestruction = !Card.cardDestruction;
-        Debug.Log("Card destruction: " + Card.cardDestruction);
+        Card.CardDestruction = !Card.CardDestruction;
+        Debug.Log("Card destruction: " + Card.CardDestruction);
     }
 }
