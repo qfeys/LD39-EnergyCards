@@ -10,7 +10,7 @@ static class GameMaster
 {
     static int turn;
     static public float powerDemand;
-    static public float resistance;
+    static public float resistance = 1;
     static public float globalWarming;
 
     public static void Start()
@@ -23,12 +23,28 @@ static class GameMaster
          *  5) goto 2)
          * 
          */
+        SetBoardIntoStartingPosition();
         turn = 1;
         for (int i = 0; i < 4; i++) DealCard();
         //flow = new Thread(() => { try { Flow(); } catch (Exception e) { mainThreadException = e; UnityEngine.Debug.LogError(e); } });
         //flow.Start();
         //UnityEngine.Debug.Log("flow: " + flow.ThreadState);
         God.theOne.StartCoroutine(God.theOne.Perform(Flow()));
+    }
+
+    private static void SetBoardIntoStartingPosition()
+    {
+        Board.AddCard(Deck.GetCard("city"), Board.Regions.city, 2, 2);
+        Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 4, 0);
+        Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 3, 1);
+        Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 0, 3);
+        Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 2, 1);
+        Board.AddCard(Deck.GetCard("trans_rail"), Board.Regions.city, 0, 4);
+        Board.AddCard(Deck.GetCard("trans_rail"), Board.Regions.city, 4, 2);
+        Board.AddCard(Deck.GetCard("plant_oil"), Board.Regions.port, 0, 2);
+        Board.AddCard(Deck.GetCard("plant_oil"), Board.Regions.port, 1, 2);
+        Board.AddCard(Deck.GetCard("trans_term_oil"), Board.Regions.port, 1, 0);
+        Board.AddCard(Deck.GetCard("store_oil"), Board.Regions.port, 0, 1);
     }
 
     static IEnumerator Flow()
@@ -70,13 +86,15 @@ static class GameMaster
     private static void CalculateResistance()
     {
         resistance += Board.State.TotalResistance;
+        Debug.Log("Resistance: " + resistance);
     }
 
     static void CheckEnd()
     {
+        Debug.Log("available POWER: " + Board.Network.CalculatePower());
         if (Board.Network.CalculatePower() < powerDemand)
             God.theOne.DisplayDefeat();
-        if (resistance < 0)
+        if (resistance > 0)
             God.theOne.DisplayVictory();
 
     }

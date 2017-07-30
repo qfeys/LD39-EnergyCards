@@ -33,10 +33,8 @@ static class Deck
         AddCards();
         Shuffel();
     }
-
-    private static void AddCards()
-    {
-        var lib = new Dictionary<Card, int> {
+    
+    static Dictionary<Card, int> lib = new Dictionary<Card, int> {
             { new Card("plant_coal"     , Board.Regions.city | Board.Regions.port), 5 },
             { new Card("plant_oil"      , Board.Regions.city | Board.Regions.port | Board.Regions.desert), 5 },
             { new Card("plant_gas"      , Board.Regions.city | Board.Regions.port), 5 },
@@ -62,8 +60,12 @@ static class Deck
             { new Card("polit_fortify_wind", Board.Regions.city), 5 },
             { new Card("polit_fortify_solar", Board.Regions.city), 5 },
             { new Card("polit_extra_card" , Board.Regions.city), 5 },
-            { new Card("polit_reshufel"   , Board.Regions.city), 5 }
+            { new Card("polit_reshufel"   , Board.Regions.city), 5 },
+            { new Card("city"           , Board.Regions.city), 0 }
         };
+
+    private static void AddCards()
+    {
         deck = new List<Card>();
         foreach(var kvp in lib)
         {
@@ -72,6 +74,13 @@ static class Deck
                 deck.Add(new Card(kvp.Key));
             }
         }
+    }
+
+    public static Card GetCard(string name)
+    {
+        List<Card> keys = lib.Keys.ToList(); 
+        Card original = keys.First(c => c.name == name);
+        return new Card(original);
     }
 
     private static void Shuffel()

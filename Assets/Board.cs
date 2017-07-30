@@ -332,6 +332,23 @@ static class Board
         }
     }
 
+    internal static void AddCard(Card card, Regions reg, int x, int y)
+    {
+        switch (reg)
+        {
+        case Regions.city:
+            if (city[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            city[x, y] = card;
+            break;
+        case Regions.port:
+            if (port[x, y] != null)
+                throw new Exception("Cant put card at " + x + ", " + y);
+            port[x, y] = card;
+            break;
+        }
+    }
+
     internal static void ClearGhosts()
     {
         GhostCard.RemoveGhosts();
@@ -370,17 +387,17 @@ static class Board
 
     const float GRID_SIZE = 120;
     const float CITY_OFFSET_X = 10;
-    const float CITY_OFFSET_Y = 6;
+    const float CITY_OFFSET_Y = 5;
     const float PORT_OFFSET_X = 11;
-    const float PORT_OFFSET_Y = 2;
+    const float PORT_OFFSET_Y = 1;
     const float OFFSHORE_OFFSET_X = 1;
-    const float OFFSHORE_OFFSET_Y = 6.5f;
+    const float OFFSHORE_OFFSET_Y = 5.5f;
     const float OSHR_OFFSET_X = 6;
-    const float OSHR_OFFSET_Y = 7;
+    const float OSHR_OFFSET_Y = 6;
     const float DESERT_OFFSET_X = 20;
-    const float DESERT_OFFSET_Y = 6.5f;
+    const float DESERT_OFFSET_Y = 5.5f;
     const float DSRR_OFFSET_X = 16;
-    const float DSRR_OFFSET_Y = 7;
+    const float DSRR_OFFSET_Y = 6;
 
     static internal class Network
     {
