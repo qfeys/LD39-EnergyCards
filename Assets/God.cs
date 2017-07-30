@@ -25,6 +25,7 @@ public class God : MonoBehaviour {
         if (theOne == null)
             theOne = this;
         activeCards = new List<Card>();
+        ImageLibrary.LoadGraphics();
         Board.Create();
         Deck.Create();
         Bin.Create();

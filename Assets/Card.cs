@@ -45,8 +45,13 @@ class Card
 
         Image bg = card.AddComponent<Image>();
         bg.sprite = ImageLibrary.GetImage("card_background_long");
-        bg.type = Image.Type.Sliced;
-        bg.color = Color.blue;
+        switch (name.Substring(0, 5))
+        {
+        case "plant": bg.color = Color.yellow; break;
+        case "trans": bg.color = Color.red; break;
+        case "store": bg.color = Color.green; break;
+        case "polit": bg.color = Color.blue; break;
+        }
 
         card.AddComponent<CardScript>().parent = this;
 
@@ -58,7 +63,7 @@ class Card
         imRt.pivot = new Vector2(0.5f, 1);
         imRt.sizeDelta = new Vector2(120, 100);
         imRt.anchoredPosition = new Vector2(0, -10);
-        bg.sprite = ImageLibrary.GetImage(name + "_big");
+        imGo.AddComponent<Image>().sprite = ImageLibrary.GetImage(name + "_big");
 
         GameObject txGo = new GameObject("card_text", typeof(RectTransform));
         txGo.transform.SetParent(card.transform, false);

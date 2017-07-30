@@ -596,9 +596,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2328cc35bb4c54abec5e26e8adfc93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  powerDemand: 0
-  resistance: 0
-  carbonLevel: 0
   hand: {fileID: 825947817}
   board_go: {fileID: 505934484}
   cardBackground: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
@@ -688,7 +685,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1948086509}
   m_LocalRotation: {x: -0.17364825, y: 0, z: 0, w: 0.9848078}
-  m_LocalPosition: {x: 15, y: 4, z: -10}
+  m_LocalPosition: {x: 15, y: 2, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

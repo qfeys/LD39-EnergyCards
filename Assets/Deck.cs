@@ -27,8 +27,6 @@ static class Deck
 
         Image bg = go.AddComponent<Image>();
         bg.sprite = ImageLibrary.GetImage("back_long");
-        bg.type = Image.Type.Sliced;
-        bg.color = Color.red;
 
         go.AddComponent<DeckScript>();
 
