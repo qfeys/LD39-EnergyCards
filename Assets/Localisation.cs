@@ -32,7 +32,7 @@ internal static class Localisation
         { "polit_fortify_wind", "In my backyard" },
         { "polit_fortify_solar", "Solar roofs" },
         { "polit_extra_card", "Extra card" },
-        { "polit_reshufel", "Reshuffle" },
+        { "polit_reshufel"  , "Reshuffle" },
     };
 
     internal static string GetText(string v)
