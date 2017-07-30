@@ -384,6 +384,28 @@ static class Board
         }
     }
 
+    internal static void RemoveCard(Card card)
+    {
+        for (int i = 0; i < 5; i++)
+            for (int j = 0; j < 5; j++)
+                if (city[i, j] != null && city[i, j].Equals(card)) city[i, j] = null;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (port[i, j] != null && port[i, j].Equals(card)) port[i, j] = null;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                if (offshore[i, j] != null && offshore[i, j].Equals(card)) offshore[i, j] = null;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (offshoreRoad[i, j] != null && offshoreRoad[i, j].Equals(card)) offshoreRoad[i, j] = null;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
+                if (desert[i, j] != null && desert[i, j].Equals(card)) desert[i, j] = null;
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                if (desertRoad[i, j] != null && desertRoad[i, j].Equals(card)) desertRoad[i, j] = null;
+    }
+
     internal static void ClearGhosts()
     {
         GhostCard.RemoveGhosts();

@@ -14,7 +14,8 @@ class Card
     public GameObject card;
     public static bool canPlay = false;
     internal static bool canBin = false;
-    
+    internal static bool cardDestruction = false;
+
     protected Card() { }
 
     public Card(string name, Board.Regions validRegions)
@@ -82,6 +83,11 @@ class Card
     {
         UnityEngine.Object.Destroy(card);
         CreateMini(pos);
+    }
+
+    private void DestroyMiniCard()
+    {
+        Board.RemoveCard(this);
     }
 
     internal void CreateMini(Vector2 pos)
@@ -173,8 +179,18 @@ class Card
         }
     }
 
-    protected class MiniCardScript : MonoBehaviour
+    protected class MiniCardScript : MonoBehaviour, IPointerClickHandler
     {
         public Card parent;
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (cardDestruction)
+            {
+                parent.DestroyMiniCard();
+                Destroy(this.gameObject);
+                Debug.Log("Try destruction");
+            }
+        }
     }
 }

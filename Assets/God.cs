@@ -65,4 +65,10 @@ public class God : MonoBehaviour {
     {
         throw new NotImplementedException();
     }
+
+    public void EnableCardDestruction()
+    {
+        Card.cardDestruction = !Card.cardDestruction;
+        Debug.Log("Card destruction: " + Card.cardDestruction);
+    }
 }
