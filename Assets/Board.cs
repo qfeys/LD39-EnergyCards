@@ -382,6 +382,18 @@ static class Board
     const float DSRR_OFFSET_X = 16;
     const float DSRR_OFFSET_Y = 7;
 
+    static internal class Network
+    {
+        public static float CalculatePower() // TODO: ALL THE THINGS!!!!!!
+        {
+            float offshSupply = Mathf.Min(State.SeaEnergy, State.SeaCables);
+            float desertSuplly = Mathf.Min(State.DesertEnergy, State.DesertCables);
+            float portSupply = State.PortEnergy;
+            float citySupply = State.CityEnergy;
+            return offshSupply + desertSuplly + portSupply + citySupply;
+        }
+    }
+
     static internal class State
     {
         public static float SeaGasProd
@@ -681,6 +693,32 @@ static class Board
             get
             {
                 return allCards.Sum(c => Data.Warming(c));
+            }
+        }
+        public static float TotalResistance
+        {
+            get
+            {
+                float val = 0;
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null) val += Data.Resistance(city[i, j],Regions.city);
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (offshore[i, j] != null) val += Data.Resistance(offshore[i, j],Regions.offshore);
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null) val += Data.Resistance(desert[i, j],Regions.desert);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null) val += Data.Resistance(port[i, j],Regions.port);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (offshoreRoad[i, j] != null) val += Data.Resistance(offshoreRoad[i, j],Regions.offshoreRoad);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (desertRoad[i, j] != null) val += Data.Resistance(desertRoad[i, j],Regions.desertRoad);
+                return val;
             }
         }
     }

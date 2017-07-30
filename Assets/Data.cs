@@ -138,6 +138,6 @@ static class Data
         public RNG() { number = (float)rng.NextDouble();
             owns.Add( this);
         }
-        public static void Update() { owns.ForEach(r => r.number = (float)rng.NextDouble();)}
+        public static void Update() { owns.ForEach(r => r.number = (float)rng.NextDouble()); }
     }
 }

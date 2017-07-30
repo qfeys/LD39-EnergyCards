@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,5 +52,15 @@ public class God : MonoBehaviour {
     public IEnumerator Perform(IEnumerator coroutine)
     {
         yield return StartCoroutine(coroutine);
+    }
+
+    internal void DisplayDefeat()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void DisplayVictory()
+    {
+        throw new NotImplementedException();
     }
 }

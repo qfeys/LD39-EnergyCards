@@ -41,11 +41,10 @@ static class GameMaster
             {
                 yield return new WaitForSeconds(0.1f);
             }
+            CalculateResistance();
             CalculateGW();
-            CalculateRep();
             Data.RNG.Update();
-            if (CheckVictory())
-                break;
+            CheckEnd();
             Bin.Activate();
             Card.canBin = true;
             while (Card.canBin)
@@ -68,14 +67,18 @@ static class GameMaster
         globalWarming += Board.State.TotalWarming;
     }
 
-    private static void CalculateRep()
+    private static void CalculateResistance()
     {
-        throw new NotImplementedException();
+        resistance += Board.State.TotalResistance;
     }
 
-    static bool CheckVictory()
+    static void CheckEnd()
     {
-        return false;
+        if (Board.Network.CalculatePower() < powerDemand)
+            God.theOne.DisplayDefeat();
+        if (resistance < 0)
+            God.theOne.DisplayVictory();
+
     }
 
     static void DealCard()
