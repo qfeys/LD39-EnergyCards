@@ -199,6 +199,39 @@ static class Board
 
             rt.anchoredPosition = new Vector2(DESERT_OFFSET_X * GRID_SIZE + 00, DESERT_OFFSET_Y * GRID_SIZE - 20);
         }
+        {
+            InfoTable GWStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Global warming",()=> "+" + GameMaster.globalWarming + "°C")
+            }, 800, 54);
+            RectTransform rt = GWStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0, 1);
+            rt.anchorMax = new Vector2(0, 1);
+            rt.pivot = new Vector2(0, 1);
+
+            rt.anchoredPosition = new Vector2(20, -40);
+        }
+        {
+            InfoTable PowerStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Required Power",()=> GameMaster.powerDemand + "GW")
+            }, 800, 54);
+            RectTransform rt = PowerStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(0.5f, 1);
+            rt.anchorMax = new Vector2(0.5f, 1);
+            rt.pivot = new Vector2(0.5f, 1);
+
+            rt.anchoredPosition = new Vector2(0, -20);
+        }
+        {
+            InfoTable ResStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+                new Tuple<string, Func<object>>("Resistance",()=> GameMaster.powerDemand + "%")
+            }, 800, 54);
+            RectTransform rt = ResStats.gameObject.transform as RectTransform;
+            rt.anchorMin = new Vector2(1, 1);
+            rt.anchorMax = new Vector2(1, 1);
+            rt.pivot = new Vector2(1, 1);
+
+            rt.anchoredPosition = new Vector2(-20, -40);
+        }
     }
 
     static public void DisplayValidSpots(Card target)

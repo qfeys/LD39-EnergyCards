@@ -39,11 +39,13 @@ static class GameMaster
         Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 3, 1);
         Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 0, 3);
         Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 2, 1);
+        Board.AddCard(Deck.GetCard("plant_coal"), Board.Regions.city, 2, 0);
         Board.AddCard(Deck.GetCard("trans_rail"), Board.Regions.city, 0, 4);
         Board.AddCard(Deck.GetCard("trans_rail"), Board.Regions.city, 4, 2);
         Board.AddCard(Deck.GetCard("plant_oil"), Board.Regions.port, 0, 2);
         Board.AddCard(Deck.GetCard("plant_oil"), Board.Regions.port, 1, 2);
         Board.AddCard(Deck.GetCard("trans_term_oil"), Board.Regions.port, 1, 0);
+        Board.AddCard(Deck.GetCard("trans_term_coal"), Board.Regions.port, 0, 0);
         Board.AddCard(Deck.GetCard("store_oil"), Board.Regions.port, 0, 1);
     }
 
