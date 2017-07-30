@@ -437,20 +437,30 @@ static class Board
     static internal class Network
     {
         private static float coalAvailability;
-        private static int desertOilAvailability;
+        private static float desertOilAvailability;
         private static float desertOilStored;
-        private static int cityOilAvailability;
+        private static float cityOilAvailability;
         private static float cityOilStored;
+        private static float cityGasStored;
+        private static float desertPowStored;
+        private static float gasFlow;       // positive from desert to city
+        private static float cityGasAvailability;
+        private static float desertGasAvailability;
+        private static float ofshPow;
+        private static float desertPow;
+        private static float cityPow;
+        private static float cityPowStored;
+        public static float cityPowAvailability;
+        private static float desToCityPowFlow;
+        private static float desertGasStored;
 
         public static void Process()
         {
             CheckCoalAvailability();
             CheckOilAvailability();
             CheckGasAvailability();
-            CalculatePowerOffshore();
-            CalculatePowerDesert();
-            CalculatePowerCity();
-            CalculateTotalAvailablePower();
+            CalculatePower();
+            CheckPowerAvailability();
         }
 
         private static void CheckCoalAvailability()
@@ -525,7 +535,7 @@ static class Board
                     {
                         float shortage = State.DesertOilProd + desertOilStored + send;
                         float available = State.TotalDesertOilProd + desertOilStored + send;
-                        coalAvailability = available / (available - shortage);
+                        desertOilAvailability = available / (available - shortage);
                         desertOilStored = 0;
                     }
                 }
@@ -533,7 +543,7 @@ static class Board
                 {       // Calculate availability and drain the reserves. If the desert does have enough, it will still not have any reserves left.
                     float shortage = State.DesertOilProd + desertOilStored + send;
                     float available = State.TotalDesertOilProd + desertOilStored + send;
-                    coalAvailability = available / (available - shortage);
+                    desertOilAvailability = available / (available - shortage);
                     desertOilStored = 0;
                 }
             }else if(cityOilNeed != 0)  // city needs oil. ###  DO THE SAME AS ABOVE  ###, but opposite.
@@ -559,7 +569,7 @@ static class Board
                     {
                         float shortage = State.CityOil + State.PortOil + cityOilStored + send;
                         float available = State.TotalCityOilProd + cityOilStored + send;
-                        coalAvailability = available / (available - shortage);
+                        cityOilAvailability = available / (available - shortage);
                         cityOilStored = 0;
                     }
                 }
@@ -567,7 +577,7 @@ static class Board
                 {       // Calculate availability and drain the reserves. If the desert does have enough, it will still not have any reserves left.
                     float shortage = State.CityOil + State.PortOil + cityOilStored + send;
                     float available = State.TotalCityOilProd + cityOilStored + send;
-                    coalAvailability = available / (available - shortage);
+                    cityOilAvailability = available / (available - shortage);
                     cityOilStored = 0;
                 }
             }       // END REPEAT
@@ -575,37 +585,191 @@ static class Board
 
         private static void CheckGasAvailability()
         {
-            throw new NotImplementedException();
+            float netGasAtCity = State.CityGas + State.PortGas + Mathf.Min(State.SeaGasProd, State.SeaPipes);
+            /*  1) check gas in city
+             *  2) send leftovers to desert
+             *  3) check gas in desert
+             *  4) store leftovers
+             *  5) remember pipe utilisation
+             */
+            // 1) check gas in city
+            float sum = netGasAtCity + cityGasStored + Mathf.Min(State.DesertGasPipes, desertGasStored);
+            if (sum >= 0)   // there is enough gas
+            {
+                cityGasAvailability = 1;
+                if (netGasAtCity + cityGasStored < 0)    // we used gas from the desert
+                    gasFlow = -(netGasAtCity + cityGasStored);
+                else    // We did not use gas from the desert. send leftovers towards the desert
+                {
+                    gasFlow = -Mathf.Min(sum, State.DesertGasPipes);
+                    cityGasStored = sum + gasFlow;
+                }
+            }
+            else    // There was not enough gas. We already used all we could from the desert, so bad luck. 
+            {
+                gasFlow = Mathf.Min(State.DesertGasPipes, desertGasStored);
+                float shortage = sum;
+                float available = State.TotalCityGasProd + gasFlow + cityGasStored;
+                cityGasAvailability = available / (available - shortage);
+            }
+            // 3) check gas in desert
+            sum = State.TotalDesertGasCons + desertGasStored - gasFlow;
+            if (sum >= 0)    // there is enough gas
+            {
+                desertGasAvailability = 1;
+                if (sum <= State.DesertGasStore)    // we can store all the leftover gas
+                {
+                    desertGasStored = sum;
+                }
+                else    // Store all we can, then Backflow
+                {
+                    desertGasStored = State.DesertGasStore;
+                    gasFlow = Mathf.Max(Mathf.Min(gasFlow + sum, State.DesertGasPipes), -State.DesertGasPipes);
+                }
+            }
+            else    // There is not enough gas
+            {
+                float shortage = sum;
+                float available = - gasFlow + desertGasStored;
+                cityGasAvailability = available / (available - shortage);
+            }
         }
 
-        private static void CalculatePowerOffshore()
+        private static void CalculatePower()
         {
-            throw new NotImplementedException();
+            ofshPow = State.SeaEnergy;
+            desertPow = 0f;
+            desertPow += State.DesertOilEnergy * desertOilAvailability;
+            desertPow += State.DesertGasEnergy * desertGasAvailability;
+            desertPow += State.DesertSolarEnergy;
+            cityPow = 0f;
+            cityPow += State.CityCoalEnergy * coalAvailability;
+            cityPow += State.CityOilEnergy * cityOilAvailability;
+            cityPow += State.CityGasEnergy * cityGasAvailability;
+            cityPow += State.CityFreeEnergy;
+            cityPow += State.SpcdPowerDrain;
         }
 
-        private static void CalculatePowerDesert()
+        private static void CheckPowerAvailability()
         {
-            throw new NotImplementedException();
+            float netPowerAtCity = cityPow + Mathf.Min(ofshPow, State.SeaCables);
+            /*  1) check power in city
+             *  2) send leftovers to desert
+             *  3) check gas in desert
+             *  4) store leftovers
+             *  5) use leftovers for gas production
+             */
+            float cityLeftoverPower = 0;
+            float desertLeftoverPower = 0;
+            // 1) check power in city
+            float sum = netPowerAtCity + cityPowStored + Mathf.Min(State.DesertCables, desertPowStored) - GameMaster.powerDemand;
+            if (sum >= 0)   // there is enough power
+            {
+                cityPowAvailability = 1;
+                if (netPowerAtCity + cityPowStored < 0)    // we used power from the desert
+                    desToCityPowFlow = -(netPowerAtCity + cityPowStored);
+                else    // We did not use power from the desert. Send leftovers towards the desert
+                {
+                    desToCityPowFlow = -Mathf.Min(sum, State.DesertCables);
+                    cityPowStored = Mathf.Min(sum + desToCityPowFlow, State.CityEnergyStore);
+                    cityLeftoverPower = sum + desToCityPowFlow - cityPowStored;
+                }
+            }
+            else    // There was not enough Power. We already used all we could from the desert, so bad luck. 
+            {
+                desToCityPowFlow = Mathf.Min(State.DesertCables, desertPowStored);
+                float shortage = sum;
+                float available = State.TotalCityGasProd + gasFlow + cityGasStored;
+                cityGasAvailability = (sum + GameMaster.powerDemand) / GameMaster.powerDemand;
+            }
+            // 3) check power in desert
+            sum = desertPowStored - desToCityPowFlow;
+            if (sum > 0)    // there is leftover power
+            {
+                if (sum <= State.DesertEnergyStore)    // we can store all the leftover power
+                {
+                    desertPowStored = sum;
+                    desertLeftoverPower = sum - desertPowStored;
+                }
+                else    // Store all we can, then Backflow
+                {
+                    desertPowStored = State.DesertEnergyStore;
+                    gasFlow = Mathf.Max(Mathf.Min(gasFlow + sum, State.DesertGasPipes), -State.DesertGasPipes);
+                }
+            }
+            else    // There is no leftover power
+            {
+            }
+
+            TryConvertingPowerToGas(cityLeftoverPower, desertLeftoverPower);
         }
 
-        private static void CalculatePowerCity()
+        static void TryConvertingPowerToGas(float cityLeftoverPower, float desertLeftoverPower)
         {
-            throw new NotImplementedException();
+            if (cityLeftoverPower > 0 || desertLeftoverPower > 0)    // We have leftover power to transform into gas
+            {
+                float cityFCap = State.CityFuelCapacity;
+                float desertFCap = State.DesertFuelCapacity;
+                if (cityLeftoverPower > 0 && cityFCap > 0)     // We have the power and the capacity
+                {
+                    float amountPowConverted = Mathf.Min(cityLeftoverPower, cityFCap * 20, (State.CityGasStore - cityGasStored) * 20);
+                    cityGasStored += amountPowConverted / 20;
+                    cityLeftoverPower -= amountPowConverted;
+                    cityFCap -= amountPowConverted / 20;
+                }
+                if (desertLeftoverPower > 0 && desertFCap > 0)
+                {
+                    float amountPowConverted = Mathf.Min(desertLeftoverPower, desertFCap * 20, (State.DesertGasStore - desertGasStored) * 20);
+                    desertGasStored += amountPowConverted / 20;
+                    desertLeftoverPower -= amountPowConverted;
+                    desertFCap -= amountPowConverted / 20;
+                }
+                if (desertLeftoverPower > 0 && desertFCap > 0) { } // We couldnt use all the power at both locations. Stop trying
+                else if (cityLeftoverPower > 0 && desertGasStored < State.DesertGasStore)   // We can still use some power of the city
+                {
+                    if ((cityFCap > 0 && gasFlow > -State.DesertGasPipes))   // We can use the gas pipes to do this
+                    {
+                        float amountPowConverted =
+                            Mathf.Min(cityLeftoverPower, cityFCap * 20, (gasFlow + State.DesertGasPipes) * 20, (State.DesertGasStore - desertGasStored) * 20);
+                        cityLeftoverPower -= amountPowConverted;
+                        cityFCap -= amountPowConverted / 20;
+                        gasFlow -= amountPowConverted / 20;
+                        desertGasStored += amountPowConverted / 20;
+                    }
+                    if (desToCityPowFlow > -State.DesertCables && desertFCap > 0)    // We can use the cables to do this
+                    {
+                        float amountPowConverted =
+                            Mathf.Min(cityLeftoverPower, desertFCap * 20, desToCityPowFlow + State.DesertCables, (State.DesertGasStore - desertGasStored) * 20);
+                        cityLeftoverPower -= amountPowConverted;
+                        desToCityPowFlow -= amountPowConverted;
+                        desertFCap -= amountPowConverted / 20;
+                        desertGasStored += amountPowConverted / 20;
+                    }
+                }
+                else if (desertLeftoverPower > 0 && cityGasStored < State.CityGasStore)   // We can still use some power of the desert
+                {
+                    if ((desertFCap > 0 && gasFlow > State.DesertGasPipes))   // We can use the gas pipes to do this
+                    {
+                        float amountPowConverted =
+                            Mathf.Min(desertLeftoverPower, desertFCap * 20, (-gasFlow + State.DesertGasPipes) * 20, (State.CityGasStore - cityGasStored) * 20);
+                        desertLeftoverPower -= amountPowConverted;
+                        desertFCap -= amountPowConverted / 20;
+                        gasFlow += amountPowConverted / 20;
+                        cityGasStored += amountPowConverted / 20;
+                    }
+                    if (desToCityPowFlow > State.DesertCables && cityFCap > 0)    // We can use the cables to do this
+                    {
+                        float amountPowConverted =
+                            Mathf.Min(desertLeftoverPower, cityFCap * 20, -desToCityPowFlow + State.DesertCables, (State.CityGasStore - cityGasStored) * 20);
+                        desertLeftoverPower -= amountPowConverted;
+                        desToCityPowFlow += amountPowConverted;
+                        cityFCap -= amountPowConverted / 20;
+                        cityGasStored += amountPowConverted / 20;
+                    }
+                }
+            }
         }
 
-        private static void CalculateTotalAvailablePower()
-        {
-            throw new NotImplementedException();
-        }
-
-        public static float CalculatePower() // TODO: ALL THE THINGS!!!!!!
-        {
-            float offshSupply = Mathf.Min(State.SeaEnergy, State.SeaCables);
-            float desertSuplly = Mathf.Min(State.DesertEnergy, State.DesertCables);
-            float portSupply = State.PortEnergy;
-            float citySupply = State.CityEnergy;
-            return offshSupply + desertSuplly + portSupply + citySupply;
-        }
     }
 
     static internal class State
@@ -939,7 +1103,7 @@ static class Board
         {
             get
             {
-                float val = 0; // base
+                float val = 20; // base
                 for (int i = 0; i < 4; i++)
                     for (int j = 0; j < 4; j++)
                         if (desert[i, j] != null)
@@ -950,7 +1114,6 @@ static class Board
                 return val;
             }
         }
-
         public static float TotalCityOilProd
         {
             get
@@ -973,5 +1136,137 @@ static class Board
                 return val;
             }
         }
+        public static float TotalCityGasProd
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null)
+                        {
+                            float v = Data.Gas(city[i, j]);
+                            val += v > 0 ? v : 0;
+                        }
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null)
+                        {
+                            float v = Data.Gas(port[i, j]);
+                            val += v > 0 ? v : 0;
+                        }
+                return val;
+            }
+        }
+        public static float TotalDesertGasCons
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null)
+                        {
+                            float v = Data.Gas(desert[i, j]);
+                            val += v < 0 ? v : 0;
+                        }
+                return val;
+            }
+        }
+        public static float DesertOilEnergy
+        {
+            get
+            {
+                float var = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null && desert[i, j].name == "plant_oil") var += Data.Energy(desert[i, j]);
+                return var;
+            }
+        }
+        public static float DesertGasEnergy
+        {
+            get
+            {
+                float var = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null && desert[i, j].name == "plant_gas") var += Data.Energy(desert[i, j]);
+                return var;
+            }
+        }
+        public static float DesertSolarEnergy
+        {
+            get
+            {
+                float var = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null && desert[i, j].name == "plant_solar") var += Data.Energy(desert[i, j]);
+                return var;
+            }
+        }
+        public static float CityCoalEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null && city[i, j].name == "plant_coal") val = Data.Energy(city[i, j]);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null && port[i, j].name == "plant_coal") val = Data.Energy(port[i, j]);
+                return val;
+            }
+        }
+        public static float CityOilEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null && city[i, j].name == "plant_oil") val = Data.Energy(city[i, j]);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null && port[i, j].name == "plant_oil") val = Data.Energy(port[i, j]);
+                return val;
+            }
+        }
+        public static float CityGasEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null && city[i, j].name == "plant_gas") val = Data.Energy(city[i, j]);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null && port[i, j].name == "plant_gas") val = Data.Energy(port[i, j]);
+                return val;
+            }
+        }
+        public static float CityFreeEnergy
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null && 
+                            (city[i, j].name == "plant_nuke" || city[i, j].name == "plant_wind" || city[i, j].name == "plant_solar")) val = Data.Energy(city[i, j]);
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null &&
+                            (port[i, j].name == "plant_nuke" || port[i, j].name == "plant_wind" || port[i, j].name == "plant_solar")) val = Data.Energy(city[i, j]);
+                return val;
+            }
+        }
+
+        public static float SpcdPowerDrain { get; internal set; }
+        public static float CityFuelCapacity { get; internal set; }
+        public static float DesertFuelCapacity { get; internal set; }
     }
 }

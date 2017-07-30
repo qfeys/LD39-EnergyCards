@@ -88,15 +88,23 @@ static class GameMaster
     private static void CalculateResistance()
     {
         resistance += Board.State.TotalResistance;
+        Debug.Log("Delta Resistance: " + Board.State.TotalResistance);
         Debug.Log("Resistance: " + resistance);
     }
 
     static void CheckEnd()
     {
-        Debug.Log("available POWER: " + Board.Network.CalculatePower());
-        if (Board.Network.CalculatePower() < powerDemand)
+        Board.Network.Process();
+        if (Board.Network.cityPowAvailability < 1)
+        {
+            resistance += 1 - Board.Network.cityPowAvailability;
+            Debug.Log("Insufficiant power");
+        }
+
+        Debug.Log("POWER availability: " + Board.Network.cityPowAvailability);
+        if (resistance > 100)
             God.theOne.DisplayDefeat();
-        if (resistance > 0)
+        if (resistance < 0)
             God.theOne.DisplayVictory();
 
     }

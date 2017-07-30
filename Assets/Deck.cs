@@ -37,7 +37,7 @@ static class Deck
     static Dictionary<Card, int> lib = new Dictionary<Card, int> {
             { new Card("plant_coal"     , Board.Regions.city | Board.Regions.port), 5 },
             { new Card("plant_oil"      , Board.Regions.city | Board.Regions.port | Board.Regions.desert), 5 },
-            { new Card("plant_gas"      , Board.Regions.city | Board.Regions.port), 5 },
+            { new Card("plant_gas"      , Board.Regions.city | Board.Regions.port | Board.Regions.desert), 5 },
             { new Card("plant_nuke"     , Board.Regions.offshore | Board.Regions.port), 5 },
             { new Card("plant_wind"     , Board.Regions.city | Board.Regions.offshore), 5 },
             { new Card("plant_solar"    , Board.Regions.city | Board.Regions.desert), 5 },
