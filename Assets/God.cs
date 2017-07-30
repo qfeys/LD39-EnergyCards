@@ -33,6 +33,8 @@ public class God : MonoBehaviour {
 
         mouseZ = Camera.main.transform.position.y * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
 	}
+
+    const float MOUSE_SPEED_MOD = 2f;
 	
 	// Update is called once per frame
 	void Update () {
@@ -43,7 +45,7 @@ public class God : MonoBehaviour {
         {
             Vector3 newMousePos = Input.mousePosition;
             newMousePos.z = mouseZ;
-            Camera.main.transform.Translate(Camera.main.ScreenToWorldPoint(mouseposition) - Camera.main.ScreenToWorldPoint(newMousePos));
+            Camera.main.transform.Translate((Camera.main.ScreenToWorldPoint(mouseposition) - Camera.main.ScreenToWorldPoint(newMousePos)) * MOUSE_SPEED_MOD);
             Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -10);
         }
         mouseposition = Input.mousePosition;
