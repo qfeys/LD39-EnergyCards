@@ -20,9 +20,13 @@ static class ImageLibrary
             byte[] data = File.ReadAllBytes(allPaths[i]);
             Texture2D t = null;
             if (allPaths[i].EndsWith("_long.png"))
-            t = new Texture2D(140, 200, TextureFormat.ARGB32, false) {
-                name = Path.GetFileNameWithoutExtension(allPaths[i])
-            };
+                t = new Texture2D(140, 200, TextureFormat.ARGB32, false) {
+                    name = Path.GetFileNameWithoutExtension(allPaths[i])
+                };
+            if (allPaths[i].EndsWith("_big.png"))
+                t = new Texture2D(120, 100, TextureFormat.ARGB32, false) {
+                    name = Path.GetFileNameWithoutExtension(allPaths[i])
+                };
             if (t == null) continue;
             t.LoadImage(data);
             dict.Add(Path.GetFileNameWithoutExtension(allPaths[i]), t);
@@ -37,7 +41,6 @@ static class ImageLibrary
             Texture2D t = dict[name];
             Sprite sp = Sprite.Create(t, new Rect(0, 0, t.width, t.height),
                 new Vector2(0.5f, 0.5f), 150, 1, SpriteMeshType.Tight);
-            Debug.Log("Succesfully loading graphic: " + name);
             return sp;
         }
         Debug.Log("Failed loading graphic: " + name);

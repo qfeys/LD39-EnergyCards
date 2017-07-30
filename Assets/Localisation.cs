@@ -10,7 +10,7 @@ internal static class Localisation
         { "plant_coal"      , "Coal power plant" },
         { "plant_oil"       , "Oil power plant" },
         { "plant_gas"       , "Natural gas power plant" },
-        { "plant_nuke"      , "Oil powered power plant" },
+        { "plant_nuke"      , "Nuclear power plant" },
         { "plant_wind"      , "Wind farm" },
         { "plant_solar"     , "Solar farm" },
         { "trans_HV"        , "HV powerline" },
@@ -39,7 +39,7 @@ internal static class Localisation
     {
         if (data.ContainsKey(v))
             return data[v];
-        Debug.Log("Failed loading string: " + v);
+        //Debug.Log("Failed loading string: " + v);
         return v;
     }
 }

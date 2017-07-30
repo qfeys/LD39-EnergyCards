@@ -47,10 +47,10 @@ class Card
         bg.sprite = ImageLibrary.GetImage("card_background_long");
         switch (name.Substring(0, 5))
         {
-        case "plant": bg.color = Color.yellow; break;
-        case "trans": bg.color = Color.red; break;
-        case "store": bg.color = Color.green; break;
-        case "polit": bg.color = Color.blue; break;
+        case "plant": bg.color = new Color(1, 0.94f, 0.25f, 1); break;
+        case "trans": bg.color = new Color(1, 0.25f, 0.25f, 1); break;
+        case "store": bg.color = new Color(0.25f, 1, 0.25f, 1); break;
+        case "polit": bg.color = new Color(0.25f, 0.25f, 1, 1); break;
         }
 
         card.AddComponent<CardScript>().parent = this;
