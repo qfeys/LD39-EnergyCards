@@ -38,6 +38,8 @@ static class ImageLibrary
     {
         if (name == "background_minicards")
             return God.theOne.miniCardBackground;
+        if (name == "ghost_mini")
+            return God.theOne.miniCardBackground;
         if (dict.ContainsKey(name))
         {
             Texture2D t = dict[name];

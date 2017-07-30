@@ -17,6 +17,7 @@ public class God : MonoBehaviour {
     internal List<Card> activeCards;
 
     Vector3 mouseposition;
+    float mouseHeight = 9;
     float mouseZ;
 
     // Use this for initialization
@@ -30,10 +31,10 @@ public class God : MonoBehaviour {
         Bin.Create();
         GameMaster.Start();
 
-        mouseZ = Camera.main.transform.position.y * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
+        mouseZ = Camera.main.transform.position.z * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
 	}
 
-    const float MOUSE_SPEED_MOD = 2f;
+    const float MOUSE_SPEED_MOD = 1f;
 	
 	// Update is called once per frame
 	void Update () {
@@ -44,11 +45,21 @@ public class God : MonoBehaviour {
         {
             Vector3 newMousePos = Input.mousePosition;
             newMousePos.z = mouseZ;
-            Camera.main.transform.Translate((Camera.main.ScreenToWorldPoint(mouseposition) - Camera.main.ScreenToWorldPoint(newMousePos)) * MOUSE_SPEED_MOD);
-            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -10);
+            float deltax = -(Camera.main.ScreenToWorldPoint(mouseposition) - Camera.main.ScreenToWorldPoint(newMousePos)).x;
+            float deltay = -(Camera.main.ScreenToWorldPoint(mouseposition) - Camera.main.ScreenToWorldPoint(newMousePos)).y *
+                Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
+            Camera.main.transform.Translate(new Vector3(deltax,deltay) * MOUSE_SPEED_MOD);
+            Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -mouseHeight);
         }
         mouseposition = Input.mousePosition;
         mouseposition.z = mouseZ;
+        if (Input.mouseScrollDelta.y != 0)
+        {
+            mouseHeight -= Input.mouseScrollDelta.y;
+            Camera.main.transform.position =
+                new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y, -mouseHeight);
+            mouseZ = Camera.main.transform.position.z * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
+        }
     }
 
     public IEnumerator Perform(IEnumerator coroutine)

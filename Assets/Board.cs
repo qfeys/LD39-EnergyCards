@@ -117,8 +117,8 @@ static class Board
         }
         {
             InfoTable ofshStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Power Generation",()=>State.SeaEnergy),
-                new Tuple<string, Func<object>>("Gas Production",()=>State.SeaGasProd)
+                new Tuple<string, Func<object>>("Power Generation",()=>State.SeaEnergy.ToString("0.#")),
+                new Tuple<string, Func<object>>("Gas Production",()=>State.SeaGasProd.ToString("0.#"))
             }, 500, 36);
             RectTransform rt = ofshStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 0);
@@ -129,8 +129,10 @@ static class Board
         }
         {
             InfoTable ofshRdStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Powerline Capacity",()=>State.SeaCables),
-                new Tuple<string, Func<object>>("Gasline Capacity",()=>State.SeaPipes)
+                new Tuple<string, Func<object>>("Powerline Capacity",()=>
+                    "" + Mathf.Min(State.SeaEnergy, State.SeaCables).ToString("0.#") + "/" + State.SeaCables.ToString("0.#")),
+                new Tuple<string, Func<object>>("Gasline Capacity",()=>
+                    "" + Mathf.Min(State.SeaGasProd, State.SeaPipes).ToString("0.#") + "/" + State.SeaPipes.ToString("0.#"))
             }, 500, 36);
             RectTransform rt = ofshRdStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 0);
@@ -141,13 +143,17 @@ static class Board
         }
         {
             InfoTable cityStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Power Generation",()=>State.CityEnergy),
-                new Tuple<string, Func<object>>("Battery Storage",()=>State.CityEnergyStore),
-                new Tuple<string, Func<object>>("Coal consumtion",()=>State.CityCoal),
-                new Tuple<string, Func<object>>("Oil consumtion",()=>State.CityOil),
-                new Tuple<string, Func<object>>("Oil Storage",()=>State.CityOilStore),
-                new Tuple<string, Func<object>>("Gas consumtion",()=>State.CityOil),
-                new Tuple<string, Func<object>>("Gas Storage",()=>State.CityGasStore)
+                new Tuple<string, Func<object>>("City & Port",()=>""),
+                new Tuple<string, Func<object>>("Power Generation",()=>(State.CityEnergy + State.PortEnergy).ToString("0.#")),
+                new Tuple<string, Func<object>>("Battery Storage",()=>
+                    "" + Network.cityPowStored.ToString("0.#") + "/" + State.CityEnergyStore),
+                new Tuple<string, Func<object>>("Coal consumtion",()=>(State.CityCoal + State.PortCoal) + "/" + State.TotalCoalProduction),
+                new Tuple<string, Func<object>>("Oil consumtion",()=>(State.CityOil + State.PortOil) + "/" + State.TotalCityOilProd),
+                new Tuple<string, Func<object>>("Oil Storage",()=>
+                    "" + Network.cityOilStored.ToString("0.#") + "/" + State.CityOilStore),
+                new Tuple<string, Func<object>>("Gas consumtion",()=>(State.CityGas + State.PortGas) + "/" + State.TotalCityGasProd),
+                new Tuple<string, Func<object>>("Gas Storage",()=>
+                    "" + Network.cityOilStored.ToString("0.#") + "/" + State.CityGasStore)
             }, 500, 36);
             RectTransform rt = cityStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 0);
@@ -156,25 +162,28 @@ static class Board
 
             rt.anchoredPosition = new Vector2(CITY_OFFSET_X * GRID_SIZE - 40, CITY_OFFSET_Y * GRID_SIZE + 40);
         }
-        {
-            InfoTable portStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Power Generation",()=>State.PortEnergy),
-                new Tuple<string, Func<object>>("Coal income",()=>State.PortCoal),
-                new Tuple<string, Func<object>>("Oil income",()=>State.PortOil),
-                new Tuple<string, Func<object>>("Gas consumtion",()=>State.PortGas)
-            }, 500, 36);
-            RectTransform rt = portStats.gameObject.transform as RectTransform;
-            rt.anchorMin = new Vector2(0, 0);
-            rt.anchorMax = new Vector2(0, 0);
-            rt.pivot = new Vector2(0, 1);
+        //{
+        //    InfoTable portStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
+        //        new Tuple<string, Func<object>>("Power Generation",()=>State.PortEnergy),
+        //        new Tuple<string, Func<object>>("Coal income",()=>State.PortCoal),
+        //        new Tuple<string, Func<object>>("Oil income",()=>State.PortOil),
+        //        new Tuple<string, Func<object>>("Gas consumtion",()=>State.PortGas)
+        //    }, 500, 36);
+        //    RectTransform rt = portStats.gameObject.transform as RectTransform;
+        //    rt.anchorMin = new Vector2(0, 0);
+        //    rt.anchorMax = new Vector2(0, 0);
+        //    rt.pivot = new Vector2(0, 1);
 
-            rt.anchoredPosition = new Vector2((CITY_OFFSET_X +4)* GRID_SIZE + 40, CITY_OFFSET_Y * GRID_SIZE - 80);
-        }
+        //    rt.anchoredPosition = new Vector2((CITY_OFFSET_X +4)* GRID_SIZE + 40, CITY_OFFSET_Y * GRID_SIZE - 80);
+        //}
         {
             InfoTable DsrRdStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Powerline Capacity",()=>State.DesertCables),
-                new Tuple<string, Func<object>>("Oilline Capacity",()=>State.DesertOilPipes),
-                new Tuple<string, Func<object>>("Gasline Capacity",()=>State.DesertGasPipes)
+                new Tuple<string, Func<object>>("Powerline Capacity",()=>
+                    "" + Mathf.Min(State.DesertEnergy, State.DesertCables).ToString("0.#") + "/" + State.DesertCables),
+                new Tuple<string, Func<object>>("Oilline Capacity",()=>
+                    "" + Mathf.Min(State.DesertGasProd, State.DesertGasPipes).ToString("0.#") + "/" + State.DesertOilPipes),
+                new Tuple<string, Func<object>>("Gasline Capacity",()=>
+                    "" + Mathf.Min(State.DesertGasProd, State.DesertGasPipes).ToString("0.#") + "/" + State.DesertGasPipes)
             }, 500, 36);
             RectTransform rt = DsrRdStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 0);
@@ -185,12 +194,15 @@ static class Board
         }
         {
             InfoTable desStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Power Generation",()=>State.DesertEnergy),
-                new Tuple<string, Func<object>>("Battery Storage",()=>State.DesertEnergyStore),
-                new Tuple<string, Func<object>>("Oil Production",()=>State.DesertOilProd),
-                new Tuple<string, Func<object>>("Oil Storage",()=>State.DesertOilStore),
-                new Tuple<string, Func<object>>("Gas Production",()=>State.DesertGasProd),
-                new Tuple<string, Func<object>>("Gas Storage",()=>State.DesertGasStore)
+                new Tuple<string, Func<object>>("Power Generation",()=>State.DesertEnergy.ToString("0.#")),
+                new Tuple<string, Func<object>>("Battery Storage",()=>
+                    "" + Network.desertPowStored.ToString("0.#") + "/" + State.DesertEnergyStore),
+                new Tuple<string, Func<object>>("Oil Production",()=>State.DesertOilProd + "/" + State.TotalDesertOilProd),
+                new Tuple<string, Func<object>>("Oil Storage",()=>
+                    "" + Network.desertOilStored.ToString("0.#") + "/" + State.DesertOilStore),
+                new Tuple<string, Func<object>>("Gas Production",()=>State.DesertGasProd + "/" + State.TotalDesertGasCons),
+                new Tuple<string, Func<object>>("Gas Storage",()=>
+                    "" + Network.desertGasStored.ToString("0.#") + "/" + State.DesertGasStore)
             }, 500, 36);
             RectTransform rt = desStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 0);
@@ -212,7 +224,7 @@ static class Board
         }
         {
             InfoTable PowerStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Required Power",()=> GameMaster.powerDemand + "GW")
+                new Tuple<string, Func<object>>("Required Power",()=> (Network.cityPowAvailability * GameMaster.powerDemand) + "/" + GameMaster.powerDemand + "GW")
             }, 800, 54);
             RectTransform rt = PowerStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0.5f, 1);
@@ -223,7 +235,7 @@ static class Board
         }
         {
             InfoTable ResStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
-                new Tuple<string, Func<object>>("Resistance",()=> GameMaster.powerDemand + "%")
+                new Tuple<string, Func<object>>("Resistance",()=> GameMaster.resistance + "%")
             }, 800, 54);
             RectTransform rt = ResStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(1, 1);
@@ -309,6 +321,8 @@ static class Board
 
     internal static void AddCard(Card card, Vector2 pos)
     {
+        if (card.name.Substring(0, 5) == "polit")
+            Modefiers.AddMod(card);
         if (pos.y < CITY_OFFSET_Y * GRID_SIZE)
         {
             int x = (int)(pos.x / GRID_SIZE - PORT_OFFSET_X);
@@ -458,23 +472,23 @@ static class Board
 
     static internal class Network
     {
-        private static float coalAvailability;
-        private static float desertOilAvailability;
-        private static float desertOilStored;
-        private static float cityOilAvailability;
-        private static float cityOilStored;
-        private static float cityGasStored;
-        private static float desertPowStored;
-        private static float gasFlow;       // positive from desert to city
-        private static float cityGasAvailability;
-        private static float desertGasAvailability;
-        private static float ofshPow;
-        private static float desertPow;
-        private static float cityPow;
-        private static float cityPowStored;
-        public static float cityPowAvailability;
-        private static float desToCityPowFlow;
-        private static float desertGasStored;
+        internal static float coalAvailability;
+        internal static float desertOilAvailability;
+        internal static float desertOilStored;
+        internal static float cityOilAvailability;
+        internal static float cityOilStored;
+        internal static float cityGasStored;
+        internal static float desertPowStored;
+        internal static float gasFlow;       // positive from desert to city
+        internal static float cityGasAvailability;
+        internal static float desertGasAvailability;
+        internal static float ofshPow;
+        internal static float desertPow;
+        internal static float cityPow;
+        internal static float cityPowStored;
+        internal static float cityPowAvailability;
+        internal static float desToCityPowFlow;
+        internal static float desertGasStored;
 
         public static void Process()
         {
@@ -1290,5 +1304,72 @@ static class Board
         public static float SpcdPowerDrain { get; internal set; }
         public static float CityFuelCapacity { get; internal set; }
         public static float DesertFuelCapacity { get; internal set; }
+    }
+
+    static internal class Modefiers
+    {
+        public static bool Fort_GW
+        {
+            get
+            {
+                return mods.Keys.Any(c=> c.name == "polit_fortify_fofu");
+            }
+        }
+        public static bool Fort_nuke
+        {
+            get
+            {
+                return mods.Keys.Any(c => c.name == "polit_fortify_nuke");
+            }
+        }
+        public static bool Fort_wind
+        {
+            get
+            {
+                return mods.Keys.Any(c => c.name == "polit_fortify_wind");
+            }
+        }
+        public static bool Fort_solar
+        {
+            get
+            {
+                return mods.Keys.Any(c => c.name == "polit_fortify_solar");
+            }
+        }
+        public static bool ExtraCard
+        {
+            get
+            {
+                return mods.Keys.Any(c => c.name == "polit_extra_card");
+            }
+        }
+
+        static Dictionary<Card, int> mods = new Dictionary<Card, int>();
+
+        static public void AddMod(Card mod)
+        {
+            if (mod.name == "polit_extra_card")
+                GameMaster.DealCard();
+            if (mod.name == "polit_reshufel")
+                Debug.Log("RESHUFFEL");
+            mods.Add(mod, 3);
+        }
+
+        static public void Update()
+        {
+            foreach(Card k in mods.Keys.ToList())
+            {
+                mods[k]--;
+                if (mods[k] < 0) { 
+                    k.DestroyMiniCard();
+                    mods.Remove(k);
+                    if (k.name == "polit_extra_card")
+                        GameMaster.removeCard = true;
+                }
+            }
+        }
+
+
+           // { new Card("polit_reshufel"   , Board.Regions.city), 2 },
     }
 }

@@ -44,7 +44,6 @@ public class HandAnimator : MonoBehaviour {
                 else
                 {
                     rt.pivot = new Vector2(rt.pivot.x, rt.pivot.y + (-rt.pivot.y + POSITION_DOWN) / 2);
-                    Debug.Log("Works");
                 }
             }
         }

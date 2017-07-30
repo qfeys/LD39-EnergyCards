@@ -12,6 +12,7 @@ static class GameMaster
     static public float powerDemand;
     static public float resistance = 1;
     static public float globalWarming;
+    internal static bool removeCard = false;
 
     public static void Start()
     {
@@ -69,6 +70,16 @@ static class GameMaster
             {
                 yield return new WaitForSeconds(0.1f);
             }
+            if (removeCard)
+            {
+                removeCard = false;
+                Card.canBin = true;
+                while (Card.canBin)
+                {
+                    yield return new WaitForSeconds(0.1f);
+                }
+            }
+            Board.Modefiers.Update();
             DealCard();
             DealCard();
             turn++;
@@ -109,7 +120,7 @@ static class GameMaster
 
     }
 
-    static void DealCard()
+    public static void DealCard()
     {
         Deck.TakeNext();
     }

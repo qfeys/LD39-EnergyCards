@@ -86,7 +86,7 @@ class Card
         CreateMini(pos);
     }
 
-    private void DestroyMiniCard()
+    public void DestroyMiniCard()
     {
         Board.RemoveCard(this);
     }
