@@ -56,13 +56,13 @@ static class Deck
             { new Card("store_oil"      , Board.Regions.city | Board.Regions.desert), 5 },
             { new Card("store_gas"      , Board.Regions.city | Board.Regions.desert), 5 },
             { new Card("store_fuel"     , Board.Regions.city | Board.Regions.port | Board.Regions.desert), 5 },
-            { new Card("pol_resist"     , Board.Regions.city), 5 },
-            { new Card("pol_fortify_fofu", Board.Regions.city), 5 },
-            { new Card("pol_fortify_nuke", Board.Regions.city), 5 },
-            { new Card("pol_fortify_wind", Board.Regions.city), 5 },
-            { new Card("pol_fortify_solar", Board.Regions.city), 5 },
-            { new Card("pol_extra_card" , Board.Regions.city), 5 },
-            { new Card("pol_reshufel"   , Board.Regions.city), 5 }
+            { new Card("polit_resist"     , Board.Regions.city), 5 },
+            { new Card("polit_fortify_fofu", Board.Regions.city), 5 },
+            { new Card("polit_fortify_nuke", Board.Regions.city), 5 },
+            { new Card("polit_fortify_wind", Board.Regions.city), 5 },
+            { new Card("polit_fortify_solar", Board.Regions.city), 5 },
+            { new Card("polit_extra_card" , Board.Regions.city), 5 },
+            { new Card("polit_reshufel"   , Board.Regions.city), 5 }
         };
         deck = new List<Card>();
         foreach(var kvp in lib)

@@ -74,7 +74,8 @@ class Card
         txRt.sizeDelta = new Vector2(120, 70);
         txRt.anchoredPosition = new Vector2(0, -120);
         Text txtx = txGo.AddComponent<Text>();
-        txtx.text = name;
+        //txtx.text = Localisation.GetText(name + "_text");
+        txtx.text = Localisation.GetText(name);
         txtx.font = God.theOne.standardFont;
     }
 
