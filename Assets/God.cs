@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class God : MonoBehaviour {
     public static God theOne;
-
-
-    public float powerDemand;
-    public float resistance;
-    public float carbonLevel;
+    
 
     public GameObject hand;
     public GameObject board_go;

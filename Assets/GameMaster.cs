@@ -8,6 +8,11 @@ using UnityEngine;
 
 static class GameMaster
 {
+    static int turn;
+    static public float powerDemand;
+    static public float resistance;
+    static public float globalWarming;
+
     public static void Start()
     {
         /*  1) Deal 4 cards
@@ -18,6 +23,7 @@ static class GameMaster
          *  5) goto 2)
          * 
          */
+        turn = 1;
         for (int i = 0; i < 4; i++) DealCard();
         //flow = new Thread(() => { try { Flow(); } catch (Exception e) { mainThreadException = e; UnityEngine.Debug.LogError(e); } });
         //flow.Start();
@@ -29,12 +35,15 @@ static class GameMaster
     {
         while (true)
         {
+            CalculatePower();
             Card.canPlay = true;
             while (Card.canPlay)
             {
                 yield return new WaitForSeconds(0.1f);
             }
-
+            CalculateGW();
+            CalculateRep();
+            Data.RNG.Update();
             if (CheckVictory())
                 break;
             Bin.Activate();
@@ -45,16 +54,32 @@ static class GameMaster
             }
             DealCard();
             DealCard();
+            turn++;
         }
     }
 
-    static void DealCard()
+    private static void CalculatePower()
     {
-        Deck.TakeNext();
+        powerDemand = 60 + turn * 5;
+    }
+
+    private static void CalculateGW()
+    {
+        globalWarming += Board.State.TotalWarming;
+    }
+
+    private static void CalculateRep()
+    {
+        throw new NotImplementedException();
     }
 
     static bool CheckVictory()
     {
         return false;
+    }
+
+    static void DealCard()
+    {
+        Deck.TakeNext();
     }
 }

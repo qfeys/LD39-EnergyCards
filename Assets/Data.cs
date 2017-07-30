@@ -5,7 +5,8 @@ using System.Text;
 
 static class Data
 {
-    static Random rng = new Random();
+    static RNG rng1 = new RNG();
+    static RNG rng2 = new RNG();
 
     static public float Energy(Card card)
     {
@@ -13,8 +14,8 @@ static class Data
         if (card.name == "plant_oil") return 10;
         if (card.name == "plant_gas") return 10;
         if (card.name == "plant_nuke") return 30;
-        if (card.name == "plant_wind") return (float)rng.NextDouble() * 5;
-        if (card.name == "plant_wind") return (float)rng.NextDouble() * 3 + 1;
+        if (card.name == "plant_wind") return rng1.number * 5;
+        if (card.name == "plant_solar") return rng2.number * 3 + 1;
         if (card.name == "trans_SPCD") return -1;
         if (card.name == "store_fuel") return -20;
         return 0;
@@ -63,8 +64,29 @@ static class Data
         if (card.name == "store_oil") return 4;
         return 0;
     }
+    static public float Warming(Card card)
+    {
+        if (card.name == "plant_coal") return 0.03f;
+        if (card.name == "plant_oil") return 0.02f;
+        if (card.name == "plant_gas") return 0.02f;
+        if (card.name == "trans_term_coal") return 0.005f;
+        if (card.name == "trans_term_oil") return 0.005f;
+        if (card.name == "trans_term_gas") return 0.005f;
+        return 0;
+    }
     static public float Resistance(Card card)
     {
         throw new NotImplementedException();
+    }
+
+    internal class RNG
+    {
+        static Random rng = new Random();
+        static List<RNG> owns = new List<RNG>();
+        public float number;
+        public RNG() { number = (float)rng.NextDouble();
+            owns.Add( this);
+        }
+        public static void Update() { owns.ForEach(r => r.number = (float)rng.NextDouble();)}
     }
 }

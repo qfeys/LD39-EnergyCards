@@ -382,7 +382,7 @@ static class Board
     const float DSRR_OFFSET_X = 16;
     const float DSRR_OFFSET_Y = 7;
 
-    static class State
+    static internal class State
     {
         public static float SeaGasProd
         {
@@ -674,6 +674,13 @@ static class Board
                     for (int j = 0; j < 4; j++)
                         if (desert[i, j] != null) gas += Data.StoreGas(desert[i, j]);
                 return gas;
+            }
+        }
+        public static float TotalWarming
+        {
+            get
+            {
+                return allCards.Sum(c => Data.Warming(c));
             }
         }
     }
