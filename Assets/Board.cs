@@ -436,6 +436,168 @@ static class Board
 
     static internal class Network
     {
+        private static float coalAvailability;
+        private static int desertOilAvailability;
+        private static float desertOilStored;
+        private static int cityOilAvailability;
+        private static float cityOilStored;
+
+        public static void Process()
+        {
+            CheckCoalAvailability();
+            CheckOilAvailability();
+            CheckGasAvailability();
+            CalculatePowerOffshore();
+            CalculatePowerDesert();
+            CalculatePowerCity();
+            CalculateTotalAvailablePower();
+        }
+
+        private static void CheckCoalAvailability()
+        {
+            if(State.CityCoal + State.PortCoal >= 0)
+            {
+                coalAvailability = 1;
+            }
+            else
+            {
+                float shortage = State.CityCoal + State.PortCoal;
+                float prod = State.TotalCoalProduction;
+                coalAvailability = prod / (prod - shortage);
+            }
+        }
+
+        private static void CheckOilAvailability()
+        {
+            /*  1) check oil in desert
+             *  2) check oil in city
+             *  3) send oil to the right place
+             *  4) recalculate the recieving end while calculating storage
+             */
+            float desertOilNeed = 0;
+            float cityOilNeed = 0;
+            // 1) check oil in desert
+            float desertOilLeftovers = 0;
+            float sum = State.DesertOilProd + desertOilStored;
+            if (sum >= 0)
+            {
+                desertOilAvailability = 1;
+                desertOilLeftovers = sum;
+            }
+            else    // Request oil from city
+                desertOilNeed = sum;
+            // 2) check oil in city
+            float cityOilLeftovers = 0;
+            sum = State.CityOil + State.PortOil + cityOilStored;
+            if (sum >= 0)
+            {
+                cityOilAvailability = 1;
+                cityOilLeftovers = sum;
+            }
+            else    // request oil from desert
+                cityOilNeed = sum;
+            // 3) send oil to the right place
+            if (desertOilNeed != 0 && cityOilNeed != 0) // both need oil. Do nothing
+            {
+                desertOilStored = 0;
+                cityOilStored = 0;
+                return;
+            }else if(desertOilNeed != 0)    // desert needs oil. Send some. Store the leftovers in the city if possible, else in the desert
+            {
+                float send = Mathf.Min(desertOilNeed, cityOilLeftovers, State.DesertOilPipes);
+                if(cityOilLeftovers > send)     // We still have oil in the city. Store what we can.
+                {
+                    if(cityOilLeftovers - send <= State.CityOilStore) // All oil can be stored in the city. Do so.
+                        cityOilStored = cityOilLeftovers - send;
+                    else    // We can store the max and have still left. Check if we can send it to the desert and do so.
+                    {
+                        cityOilStored = State.CityOilStore;
+                        if(send != State.DesertOilPipes)    // the limit on sending was not the pipes. It was the demand. Send all we can so they can store it
+                            send += Mathf.Min(cityOilLeftovers - cityOilStored, State.DesertOilPipes - send);
+                    }
+                    // The oil arrives in the desert. Calculate the availability.
+                    if (State.DesertOilProd + desertOilStored + send >= 0) // The desert has now enough oil available. use it and store the rest if possible.
+                    {
+                        desertOilAvailability = 1;
+                        desertOilStored = Mathf.Min(State.DesertOilProd + desertOilStored + send, State.DesertOilStore);
+                    }
+                    else    // The desert has still not enough oil. Calculate availability. Drain the reserves.
+                    {
+                        float shortage = State.DesertOilProd + desertOilStored + send;
+                        float available = State.TotalDesertOilProd + desertOilStored + send;
+                        coalAvailability = available / (available - shortage);
+                        desertOilStored = 0;
+                    }
+                }
+                else    // Limit decided by the cityleftovers. We could send more and use more. All stores will be empty. The desert will (probably) not have enough.
+                {       // Calculate availability and drain the reserves. If the desert does have enough, it will still not have any reserves left.
+                    float shortage = State.DesertOilProd + desertOilStored + send;
+                    float available = State.TotalDesertOilProd + desertOilStored + send;
+                    coalAvailability = available / (available - shortage);
+                    desertOilStored = 0;
+                }
+            }else if(cityOilNeed != 0)  // city needs oil. ###  DO THE SAME AS ABOVE  ###, but opposite.
+            {
+                float send = Mathf.Min(cityOilNeed, desertOilLeftovers, State.DesertOilPipes);
+                if (desertOilLeftovers > send)     // We still have oil in the city. Store what we can.
+                {
+                    if (desertOilLeftovers - send <= State.DesertOilStore) // All oil can be stored in the city. Do so.
+                        desertOilStored = desertOilLeftovers - send;
+                    else    // We can store the max and have still left. Check if we can send it to the desert and do so.
+                    {
+                        desertOilStored = State.DesertOilStore;
+                        if (send != State.DesertOilPipes)    // the limit on sending was not the pipes. It was the demand. Send all we can so they can store it
+                            send += Mathf.Min(desertOilLeftovers - desertOilStored, State.DesertOilPipes - send);
+                    }
+                    // The oil arrives in the desert. Calculate the availability.
+                    if (State.CityOil + State.PortOil + cityOilStored + send >= 0) // The desert has now enough oil available. use it and store the rest if possible.
+                    {
+                        cityOilAvailability = 1;
+                        cityOilStored = Mathf.Min(State.CityOil + State.PortOil + cityOilStored + send, State.CityOilStore);
+                    }
+                    else    // The desert has still not enough oil. Calculate availability. Drain the reserves.
+                    {
+                        float shortage = State.CityOil + State.PortOil + cityOilStored + send;
+                        float available = State.TotalCityOilProd + cityOilStored + send;
+                        coalAvailability = available / (available - shortage);
+                        cityOilStored = 0;
+                    }
+                }
+                else    // Limit decided by the cityleftovers. We could send more and use more. All stores will be empty. The desert will (probably) not have enough.
+                {       // Calculate availability and drain the reserves. If the desert does have enough, it will still not have any reserves left.
+                    float shortage = State.CityOil + State.PortOil + cityOilStored + send;
+                    float available = State.TotalCityOilProd + cityOilStored + send;
+                    coalAvailability = available / (available - shortage);
+                    cityOilStored = 0;
+                }
+            }       // END REPEAT
+        }
+
+        private static void CheckGasAvailability()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void CalculatePowerOffshore()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void CalculatePowerDesert()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void CalculatePowerCity()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void CalculateTotalAvailablePower()
+        {
+            throw new NotImplementedException();
+        }
+
         public static float CalculatePower() // TODO: ALL THE THINGS!!!!!!
         {
             float offshSupply = Mathf.Min(State.SeaEnergy, State.SeaCables);
@@ -536,28 +698,6 @@ static class Board
                 return val;
             }
         }
-        //public static float PortOilStore
-        //{
-        //    get
-        //    {
-        //        float val = 0; // base
-        //        for (int i = 0; i < 3; i++)
-        //            for (int j = 0; j < 3; j++)
-        //                if (port[i, j] != null) val += Data.StoreOil(port[i, j]);
-        //        return val;
-        //    }
-        //}
-        //public static float PortGasStore
-        //{
-        //    get
-        //    {
-        //        float val = 0; // base
-        //        for (int i = 0; i < 3; i++)
-        //            for (int j = 0; j < 3; j++)
-        //                if (port[i, j] != null) val += Data.StoreGas(port[i, j]);
-        //        return val;
-        //    }
-        //}
         public static float CityEnergy
         {
             get
@@ -770,6 +910,66 @@ static class Board
                 for (int i = 0; i < 3; i++)
                     for (int j = 0; j < 3; j++)
                         if (desertRoad[i, j] != null) val += Data.Resistance(desertRoad[i, j],Regions.desertRoad);
+                return val;
+            }
+        }
+        public static float TotalCoalProduction
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null)
+                        {
+                            float v = Data.Coal(city[i, j]);
+                            val += v > 0 ? v : 0;
+                        }
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null)
+                        {
+                            float v = Data.Coal(port[i, j]);
+                            val += v > 0 ? v : 0;
+                        }
+                return val;
+            }
+        }
+        public static float TotalDesertOilProd
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 4; i++)
+                    for (int j = 0; j < 4; j++)
+                        if (desert[i, j] != null)
+                        {
+                            float v = Data.Oil(desert[i, j]);
+                            val += v > 0 ? v : 0;
+                        }
+                return val;
+            }
+        }
+
+        public static float TotalCityOilProd
+        {
+            get
+            {
+                float val = 0; // base
+                for (int i = 0; i < 5; i++)
+                    for (int j = 0; j < 5; j++)
+                        if (city[i, j] != null)
+                        {
+                            float v = Data.Oil(city[i, j]);
+                            val += v > 0 ? v : 0;
+                        }
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++)
+                        if (port[i, j] != null)
+                        {
+                            float v = Data.Oil(port[i, j]);
+                            val += v > 0 ? v : 0;
+                        }
                 return val;
             }
         }
