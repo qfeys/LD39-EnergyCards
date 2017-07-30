@@ -557,6 +557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   down: 0
+  fullyDown: 0
 --- !u!1 &1440222383
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,6 +601,7 @@ MonoBehaviour:
   hand: {fileID: 825947817}
   board_go: {fileID: 505934484}
   miniCardBackground: {fileID: 21300000, guid: 7ba62bb974db9034bb9d20d58b5506e2, type: 3}
+  ghost_card: {fileID: 21300000, guid: 029d9152a8b366741b9631e8e8401f32, type: 3}
   board_border: {fileID: 21300000, guid: cfab74e3697a39c4cafa9fa9e1ff09e0, type: 3}
   standardFont: {fileID: 12800000, guid: 7dd337028bae93f4ba3086ffc17f629c, type: 3}
 --- !u!1 &1507900419

@@ -22,7 +22,7 @@ class GhostCard : Card
         rt.anchoredPosition = pos;
 
         Image bg = card.AddComponent<Image>();
-        bg.sprite = ImageLibrary.GetImage("ghost_mini");
+        bg.sprite = ImageLibrary.GetImage("ghost_card");
         bg.type = Image.Type.Sliced;
         bg.color = Color.gray;
 
@@ -42,9 +42,10 @@ class GhostCard : Card
 
     public static void RemoveGhosts()
     {
+        if(presentGhosts != null)
         presentGhosts.ForEach(g =>
         {
-            GameObject.Destroy(g.card);
+            Object.Destroy(g.card);
         });
         presentGhosts = null;
     }

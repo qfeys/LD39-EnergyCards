@@ -11,6 +11,7 @@ public class God : MonoBehaviour {
     public GameObject board_go;
 
     public Sprite miniCardBackground;
+    public Sprite ghost_card;
     public Sprite board_border;
     public Font standardFont;
 

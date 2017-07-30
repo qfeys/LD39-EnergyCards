@@ -125,7 +125,7 @@ class Card
         imRt.pivot = new Vector2(0.5f, 0.5f);
         imRt.sizeDelta = new Vector2(100, 100);
         imRt.anchoredPosition = new Vector2(0, 0);
-        bg.sprite = ImageLibrary.GetImage(name + "_small");
+        imGo.AddComponent<Image>().sprite = ImageLibrary.GetImage(name + "_mini");
     }
 
     class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
@@ -136,7 +136,8 @@ class Card
         {
             transform.parent.GetComponent<HandAnimator>().down = true;
             transform.SetParent(transform.parent.parent);
-            Board.DisplayValidSpots(parent);
+            if(canPlay)
+                Board.DisplayValidSpots(parent);
         }
 
         public void OnDrag(PointerEventData eventData)

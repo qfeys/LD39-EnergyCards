@@ -27,6 +27,10 @@ static class ImageLibrary
                 t = new Texture2D(120, 100, TextureFormat.ARGB32, false) {
                     name = Path.GetFileNameWithoutExtension(allPaths[i])
                 };
+            if (allPaths[i].EndsWith("_mini.png"))
+                t = new Texture2D(100, 100, TextureFormat.ARGB32, false) {
+                    name = Path.GetFileNameWithoutExtension(allPaths[i])
+                };
             if (t == null) continue;
             t.LoadImage(data);
             dict.Add(Path.GetFileNameWithoutExtension(allPaths[i]), t);
@@ -38,8 +42,8 @@ static class ImageLibrary
     {
         if (name == "background_minicards")
             return God.theOne.miniCardBackground;
-        if (name == "ghost_mini")
-            return God.theOne.miniCardBackground;
+        if (name == "ghost_card")
+            return God.theOne.ghost_card;
         if (dict.ContainsKey(name))
         {
             Texture2D t = dict[name];
