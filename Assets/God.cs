@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class God : MonoBehaviour {
     public static God theOne;
@@ -13,7 +14,12 @@ public class God : MonoBehaviour {
     public Sprite miniCardBackground;
     public Sprite ghost_card;
     public Sprite board_border;
+    public Sprite bin;
+    public Sprite sliced_bg;
     public Font standardFont;
+
+    public AudioClip playCard;
+    public AudioClip binCard;
 
     internal List<Card> activeCards;
 
@@ -30,6 +36,8 @@ public class God : MonoBehaviour {
         Board.Create();
         Deck.Create();
         Bin.Create();
+        Tutor.Create();
+        Tooltip.Create();
         GameMaster.Start();
 
         mouseZ = Camera.main.transform.position.z * Mathf.Atan(Camera.main.transform.rotation.eulerAngles.x * Mathf.Deg2Rad);
@@ -70,17 +78,33 @@ public class God : MonoBehaviour {
 
     internal void DisplayDefeat()
     {
-        throw new NotImplementedException();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("EndScreen");
+        GameObject.Find("FinalText").GetComponent<Text>().text = "You lost. Better luck next time.";
+        GameObject.Find("FinalText").GetComponent<AudioSource>().Play();
     }
 
     internal void DisplayVictory()
     {
-        throw new NotImplementedException();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("EndScreen");
+        GameObject.Find("FinalText").GetComponent<Text>().text = "You won! Congratulations";
+        GameObject.Find("FinalText").GetComponent<AudioSource>().Play();
     }
 
     public void EnableCardDestruction()
     {
         Card.CardDestruction = !Card.CardDestruction;
         Debug.Log("Card destruction: " + Card.CardDestruction);
+    }
+
+    public void PlayCardSound()
+    {
+        GetComponent<AudioSource>().clip = playCard;
+        GetComponent<AudioSource>().Play();
+    }
+
+    public void PlayBinSound()
+    {
+        GetComponent<AudioSource>().clip = binCard;
+        GetComponent<AudioSource>().Play();
     }
 }

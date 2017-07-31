@@ -25,14 +25,10 @@ static class Bin
         rt.anchorMax = new Vector2(1, 1);
         rt.pivot = new Vector2(1, POSITION_UP);
         rt.sizeDelta = new Vector2(160, 220);
-
-        go.AddComponent<LayoutElement>().ignoreLayout = true;
         rt.anchoredPosition = new Vector2(-20,0);
 
         Image bg = go.AddComponent<Image>();
         bg.sprite = ImageLibrary.GetImage("bin");
-        bg.type = Image.Type.Sliced;
-        bg.color = Color.red;
 
         go.AddComponent<BinScript>();
     }

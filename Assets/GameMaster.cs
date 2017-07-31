@@ -56,6 +56,7 @@ static class GameMaster
         {
             CalculatePower();
             Card.canPlay = true;
+            Tutor.PlayMessage(0);
             while (Card.canPlay)
             {
                 yield return new WaitForSeconds(0.1f);
@@ -66,6 +67,7 @@ static class GameMaster
             CheckEnd();
             Bin.Activate();
             Card.canBin = true;
+            Tutor.PlayMessage(1);
             while (Card.canBin)
             {
                 yield return new WaitForSeconds(0.1f);
@@ -73,6 +75,7 @@ static class GameMaster
             if (removeCard)
             {
                 removeCard = false;
+                Tutor.PlayMessage(2);
                 Card.canBin = true;
                 while (Card.canBin)
                 {

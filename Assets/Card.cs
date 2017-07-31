@@ -16,6 +16,7 @@ class Card
     internal static bool canBin = false;
     internal static bool CardDestruction { get { return _cardDestruction; } set { _cardDestruction = value; God.theOne.hand.GetComponent<HandAnimator>().fullyDown = value; } }
     internal static bool _cardDestruction = false;
+    const float TOOLTIP_DELAY = 0.5f;
 
     protected Card() { }
 
@@ -128,9 +129,19 @@ class Card
         imGo.AddComponent<Image>().sprite = ImageLibrary.GetImage(name + "_mini");
     }
 
-    class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler
+    class CardScript : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler , IPointerEnterHandler, IPointerExitHandler
     {
         public Card parent;
+        float clock = TOOLTIP_DELAY;
+        bool enter = false;
+
+        private void Update()
+        {
+            if (enter)
+                clock -= Time.deltaTime;
+            if (clock < 0)
+                Tooltip.Display(parent.name);
+        }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -170,6 +181,7 @@ class Card
                     Board.AddCard(parent, pos);
                     God.theOne.activeCards.Add(parent);
                     parent.ConvertToMini(pos);
+                    God.theOne.PlayCardSound();
                     canPlay = false;
                 }
             }else if(results.Any(r=>r.gameObject.name == "bin") && canBin)
@@ -177,7 +189,22 @@ class Card
                 Bin.Dispose(parent);
                 canBin = false;
                 Destroy(gameObject);
+                God.theOne.PlayBinSound();
             }
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            enter = true;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            enter = false;
+            if (clock < 0)
+                Tooltip.EndDisplay();
+            clock = TOOLTIP_DELAY;
+
         }
     }
 

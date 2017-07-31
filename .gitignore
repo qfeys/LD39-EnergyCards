@@ -79,3 +79,13 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.assets
+*.resource
+
+
+# Manual ignore following folders
+Power_the_wims_ot_people_Data/
+ProjectSettings/
+Temp/
+*.meta
+*.exe
