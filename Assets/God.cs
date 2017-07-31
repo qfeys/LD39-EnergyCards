@@ -24,7 +24,7 @@ public class God : MonoBehaviour {
     internal List<Card> activeCards;
 
     Vector3 mouseposition;
-    float mouseHeight = 9;
+    float mouseHeight = 12;
     float mouseZ;
 
     // Use this for initialization

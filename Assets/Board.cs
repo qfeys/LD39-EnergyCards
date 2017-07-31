@@ -125,7 +125,7 @@ static class Board
             rt.anchorMax = new Vector2(0, 0);
             rt.pivot = new Vector2(0, 1);
 
-            rt.anchoredPosition = new Vector2(OFFSHORE_OFFSET_X * GRID_SIZE + 60, OFFSHORE_OFFSET_Y * GRID_SIZE - 20);
+            rt.anchoredPosition = new Vector2(OFFSHORE_OFFSET_X * GRID_SIZE + 00, OFFSHORE_OFFSET_Y * GRID_SIZE - 20);
         }
         {
             InfoTable ofshRdStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
@@ -133,13 +133,13 @@ static class Board
                     "" + Mathf.Min(State.SeaEnergy, State.SeaCables).ToString("0.#") + "/" + State.SeaCables.ToString("0.#")),
                 new Tuple<string, Func<object>>("Gasline Capacity",()=>
                     "" + Mathf.Min(State.SeaGasProd, State.SeaPipes).ToString("0.#") + "/" + State.SeaPipes.ToString("0.#"))
-            }, 500, 36);
+            }, 550, 36);
             RectTransform rt = ofshRdStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 0);
             rt.anchorMax = new Vector2(0, 0);
             rt.pivot = new Vector2(0, 0);
 
-            rt.anchoredPosition = new Vector2(OSHR_OFFSET_X * GRID_SIZE - 40, (OSHR_OFFSET_Y + 3) * GRID_SIZE + 40);
+            rt.anchoredPosition = new Vector2(OSHR_OFFSET_X * GRID_SIZE - 80, (OSHR_OFFSET_Y + 3) * GRID_SIZE + 40);
         }
         {
             InfoTable cityStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
@@ -184,13 +184,13 @@ static class Board
                     "" + Mathf.Min(State.DesertGasProd, State.DesertGasPipes).ToString("0.#") + "/" + State.DesertOilPipes),
                 new Tuple<string, Func<object>>("Gasline Capacity",()=>
                     "" + Mathf.Min(State.DesertGasProd, State.DesertGasPipes).ToString("0.#") + "/" + State.DesertGasPipes)
-            }, 500, 36);
+            }, 550, 36);
             RectTransform rt = DsrRdStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 0);
             rt.anchorMax = new Vector2(0, 0);
             rt.pivot = new Vector2(0, 0);
 
-            rt.anchoredPosition = new Vector2(DSRR_OFFSET_X * GRID_SIZE - 40, (DSRR_OFFSET_Y + 3) * GRID_SIZE + 40);
+            rt.anchoredPosition = new Vector2(DSRR_OFFSET_X * GRID_SIZE - 80, (DSRR_OFFSET_Y + 3) * GRID_SIZE + 40);
         }
         {
             InfoTable desStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
@@ -209,12 +209,12 @@ static class Board
             rt.anchorMax = new Vector2(0, 0);
             rt.pivot = new Vector2(0, 1);
 
-            rt.anchoredPosition = new Vector2(DESERT_OFFSET_X * GRID_SIZE + 00, DESERT_OFFSET_Y * GRID_SIZE - 20);
+            rt.anchoredPosition = new Vector2(DESERT_OFFSET_X * GRID_SIZE + 00, DESERT_OFFSET_Y * GRID_SIZE - 40);
         }
         {
             InfoTable GWStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
                 new Tuple<string, Func<object>>("Global warming",()=> "+" + GameMaster.globalWarming.ToString("0.000") + "°C")
-            }, 900, 54);
+            }, 1000, 66);
             RectTransform rt = GWStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0, 1);
             rt.anchorMax = new Vector2(0, 1);
@@ -225,7 +225,7 @@ static class Board
         {
             InfoTable PowerStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
                 new Tuple<string, Func<object>>("Required Power",()=> (Network.cityPowAvailability * GameMaster.powerDemand) + "/" + GameMaster.powerDemand + "GW")
-            }, 800, 54);
+            }, 900, 66);
             RectTransform rt = PowerStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(0.5f, 1);
             rt.anchorMax = new Vector2(0.5f, 1);
@@ -236,7 +236,7 @@ static class Board
         {
             InfoTable ResStats = new InfoTable(God.theOne.board_go.transform, new List<Tuple<string, Func<object>>>() {
                 new Tuple<string, Func<object>>("Resistance",()=> GameMaster.resistance + "%")
-            }, 800, 54);
+            }, 800, 66);
             RectTransform rt = ResStats.gameObject.transform as RectTransform;
             rt.anchorMin = new Vector2(1, 1);
             rt.anchorMax = new Vector2(1, 1);

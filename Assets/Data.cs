@@ -66,18 +66,18 @@ static class Data
     }
     static public float Warming(Card card)
     {
-        if (card.name == "plant_coal") return 0.03f;
-        if (card.name == "plant_oil") return 0.02f;
-        if (card.name == "plant_gas") return 0.02f;
-        if (card.name == "trans_term_coal") return 0.005f;
-        if (card.name == "trans_term_oil") return 0.005f;
-        if (card.name == "trans_term_gas") return 0.005f;
-        if (card.name == "store_fuel") return -0.015f;
+        if (card.name == "plant_coal") return 0.03f/3;
+        if (card.name == "plant_oil") return 0.02f/3;
+        if (card.name == "plant_gas") return 0.02f/3;
+        if (card.name == "trans_term_coal") return 0.005f/3;
+        if (card.name == "trans_term_oil") return 0.005f/3;
+        if (card.name == "trans_term_gas") return 0.005f/3;
+        if (card.name == "store_fuel") return -0.015f/3;
         return 0;
     }
     static public float Resistance(Card card, Board.Regions region)
     {
-        float ret = _resistance(card, region, Board.Modefiers.Fort_GW ? GameMaster.globalWarming / 2 : GameMaster.globalWarming);
+        float ret = _resistance(card, region, Board.Modefiers.Fort_GW ? GameMaster.globalWarming / 2 : GameMaster.globalWarming)/4;
         if (card.name == "plant_nuke" && Board.Modefiers.Fort_nuke) return ret - 1.5f;
         if (card.name == "plant_solar" && Board.Modefiers.Fort_solar) return ret - 1f;
         if (card.name == "plant_wind" && Board.Modefiers.Fort_wind) return ret - 1f;

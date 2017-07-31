@@ -77,6 +77,7 @@ static class GameMaster
                 removeCard = false;
                 Tutor.PlayMessage(2);
                 Card.canBin = true;
+                Bin.Activate();
                 while (Card.canBin)
                 {
                     yield return new WaitForSeconds(0.1f);
@@ -91,7 +92,7 @@ static class GameMaster
 
     private static void CalculatePower()
     {
-        powerDemand = 60 + turn * 5;
+        powerDemand = 60 + turn * 3;
     }
 
     private static void CalculateGW()

@@ -18,7 +18,7 @@ static class Tutor
         rt.anchorMin = new Vector2(0.5f, 1);
         rt.anchorMax = new Vector2(0.5f, 1);
         rt.pivot = new Vector2(0.5f, 1);
-        rt.sizeDelta = new Vector2(400, 80);
+        rt.sizeDelta = new Vector2(650, 80);
         rt.anchoredPosition = new Vector2(0, 30);
 
         Image bg = go.AddComponent<Image>();
@@ -32,11 +32,12 @@ static class Tutor
         txRt.anchorMin = new Vector2(0.5f, 0);
         txRt.anchorMax = new Vector2(0.5f, 0);
         txRt.pivot = new Vector2(0.5f, 0);
-        txRt.sizeDelta = new Vector2(400, 50);
+        txRt.sizeDelta = new Vector2(650, 50);
         txRt.anchoredPosition = new Vector2(0, 20);
         Text txtx = txGo.AddComponent<Text>();
         txtx.font = God.theOne.standardFont;
         txtx.color = Color.red;
+        txtx.fontSize = 20;
         txtx.alignment = TextAnchor.LowerCenter;
         txtx.text = messages[0];
 
