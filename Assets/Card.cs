@@ -90,7 +90,7 @@ class Card
     public void DestroyMiniCard()
     {
         Board.RemoveCard(this);
-        GameObject.Destroy(card);
+        UnityEngine.Object.Destroy(card);
     }
 
     internal void CreateMini(Vector2 pos)
